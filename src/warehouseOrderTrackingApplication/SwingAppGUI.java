@@ -81,8 +81,7 @@ public class SwingAppGUI extends JFrame {
 		public void actionPerformed(ActionEvent ae)
 		{
 			String command = ae.getActionCommand();
-			swtich (command)
-			{
+			switch (command) {
 				case "OK": 
 					statusLabel.setText("OK!");
 					break;
@@ -91,7 +90,7 @@ public class SwingAppGUI extends JFrame {
 					break;
 				case "Cancel":
 					statusLabel.setText("Cancel not possible");
-					break
+					break;
 			}
 		}
 	}
