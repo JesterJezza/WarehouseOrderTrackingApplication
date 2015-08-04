@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class warehouseJDBC {
 
 	static final String jdbcDriver = "com.mysql.jdbc.Driver";
-	static final String dbURL = "jdbc:mysql://127.0.0.1:3306";
+	static final String dbURL = "jdbc:mysql://127.0.0.1:3306/mydb";
 	static final String user = "jwilks";
 	static final String pass = "netbuilder";
 
@@ -19,12 +19,13 @@ public class warehouseJDBC {
 		Statement stmt = null;
 		ArrayList <String> result = new ArrayList<String>();
 		try {
-			Class.forName(jdbcDriver);
+			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(dbURL,user, pass);
 	
 			stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(sqlRead);
+			System.out.println(rs.toString());
 			try {
 				int resultLength = rs.getFetchSize();
 				
@@ -69,12 +70,12 @@ public class warehouseJDBC {
 		Statement stmt = null;
 		
 		try {
-			Class.forName(jdbcDriver);
+			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(dbURL,user, pass);
-			
+
 			stmt = conn.createStatement();
-			stmt.executeQuery(sqlCreate);
+			stmt.executeUpdate(sqlCreate);
 			System.out.println("Successfully inserted record into table");
 		}catch (SQLException sqle){
 			sqle.printStackTrace();
@@ -101,12 +102,12 @@ public class warehouseJDBC {
 		Statement stmt = null;
 		
 		try {
-			Class.forName(jdbcDriver);
+			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(dbURL,user, pass);
 			
 			stmt = conn.createStatement();
-			stmt.executeQuery(sqlUpdate);
+			stmt.executeUpdate(sqlUpdate);
 			System.out.println("Successfully updated record in table"); 
 		}catch (SQLException sqle){
 			sqle.printStackTrace();
@@ -133,7 +134,7 @@ public class warehouseJDBC {
 		Statement stmt = null;
 		
 		try {
-			Class.forName(jdbcDriver);
+			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(dbURL,user, pass);
 			

@@ -11,11 +11,6 @@ public class item {
 	private boolean porous;
 	
 	
-	public void updateQuantity(int quantity) {
-		//method to update quantity in DB based on order or purchase order value
-		
-	}
-	
 	
 
 }

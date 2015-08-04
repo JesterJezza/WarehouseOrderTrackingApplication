@@ -6,9 +6,4 @@ public class employee {
 	private String employeeDept;
 	private String employeeAddress;
 	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

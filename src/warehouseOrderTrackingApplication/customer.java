@@ -10,9 +10,4 @@ public class customer {
 	private boolean accountStatus;
 	private float accBalance;
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

@@ -21,7 +21,7 @@ public class SwingAppGUI extends JFrame {
 	
 	public SwingAppGUI(){prepareGUI();}
 	
-	public static void main(String[] args) {
+	public void swing() {
 		// TODO Auto-generated method stub
 		
 		SwingAppGUI sD = new SwingAppGUI();
@@ -57,19 +57,19 @@ public class SwingAppGUI extends JFrame {
 	private void showEvent()
 	{
 		headerLabel.setText("Press Button");
-		JButton okButton = new JButton("OK");
+		JButton orderButton = new JButton("Display Orders");
 		JButton submitButton = new JButton("Submit");
 		JButton cancelButton = new JButton("Cancel");
 		
-		okButton.setActionCommand("OK");
+		orderButton.setActionCommand("Display");
 		submitButton.setActionCommand("Submit");
 		cancelButton.setActionCommand("Cancel");
 		
-		okButton.addActionListener(new BCL());
+		orderButton.addActionListener(new BCL());
 		submitButton.addActionListener(new BCL());
 		cancelButton.addActionListener(new BCL());
 		
-		controlPanel.add(okButton);
+		controlPanel.add(orderButton);
 		controlPanel.add(submitButton);
 		controlPanel.add(cancelButton);
 		mainFrame.setVisible(true);
@@ -82,8 +82,8 @@ public class SwingAppGUI extends JFrame {
 		{
 			String command = ae.getActionCommand();
 			switch (command) {
-				case "OK": 
-					statusLabel.setText("OK!");
+				case "Display": 
+					customerOrder cust = new customerOrder();
 					break;
 				case "Submit":
 					statusLabel.setText("Submitted!");
