@@ -6,18 +6,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-
-//***********THIS NEEDS FINISHING*****************
-//SET UP DB
-//OBTAIN CREDENTIALS
-//SET UP METHODS TO ACCESS METHODS FOR DB MODS
-
 public class warehouseJDBC {
 
 	static final String jdbcDriver = "com.mysql.jdbc.Driver";
-	static final String dbURL = "*********DATABASE URL*******";
-	static final String user = "**********username***********";
-	static final String pass = "**********password***********";
+	static final String dbURL = "jdbc:mysql://127.0.0.1:3306";
+	static final String user = "jwilks";
+	static final String pass = "netbuilder";
 
 	public ArrayList<String> readDB(String sqlRead)
 	{
@@ -25,7 +19,7 @@ public class warehouseJDBC {
 		Statement stmt = null;
 		ArrayList <String> result = new ArrayList<String>();
 		try {
-			Class.forName(""/*db conn url*/);
+			Class.forName(jdbcDriver);
 			System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(dbURL,user, pass);
 	
@@ -75,7 +69,7 @@ public class warehouseJDBC {
 		Statement stmt = null;
 		
 		try {
-			Class.forName(""/*db conn url*/);
+			Class.forName(jdbcDriver);
 			System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(dbURL,user, pass);
 			
@@ -107,7 +101,7 @@ public class warehouseJDBC {
 		Statement stmt = null;
 		
 		try {
-			Class.forName(""/*db conn url*/);
+			Class.forName(jdbcDriver);
 			System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(dbURL,user, pass);
 			
@@ -139,7 +133,7 @@ public class warehouseJDBC {
 		Statement stmt = null;
 		
 		try {
-			Class.forName(""/*db conn url*/);
+			Class.forName(jdbcDriver);
 			System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(dbURL,user, pass);
 			

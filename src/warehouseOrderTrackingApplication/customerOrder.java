@@ -1,9 +1,4 @@
 package warehouseOrderTrackingApplication;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 public class customerOrder {
@@ -12,7 +7,7 @@ public class customerOrder {
 	//private array of items needs adding here
 	private float orderTotal;
 	private String deliveryAddress;
-	private boolean isCheckedOut;
+	private boolean isCheckedOut = false;
 	private orderStatus eOrderStatus;
 	public enum orderStatus
 	{
