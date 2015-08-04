@@ -4,9 +4,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 
-//THIS NEEDS FINISHING
+//***********THIS NEEDS FINISHING*****************
 //SET UP DB
 //OBTAIN CREDENTIALS
 //SET UP METHODS TO ACCESS METHODS FOR DB MODS
@@ -15,24 +16,38 @@ public class warehouseJDBC {
 
 	static final String jdbcDriver = "com.mysql.jdbc.Driver";
 	static final String dbURL = "*********DATABASE URL*******";
-	static final String user = "username";
-	static final String pass = "password";
+	static final String user = "**********username***********";
+	static final String pass = "**********password***********";
 
-	public void readDB()
+	public ArrayList<String> readDB(String sqlRead)
 	{
 		Connection conn = null;
 		Statement stmt = null;
-		
+		ArrayList <String> result = new ArrayList<String>();
 		try {
 			Class.forName(""/*db conn url*/);
 			System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(dbURL,user, pass);
-			
+	
 			stmt = conn.createStatement();
-			String sqlRead = "SELECT " + " FROM " + " WHERE " + "";
 			ResultSet rs = stmt.executeQuery(sqlRead);
-			//handle results here 
-			
+			try {
+				int resultLength = rs.getFetchSize();
+				
+				if (resultLength > 0)
+				{
+					//Cast results to an array list of type string 
+					//Loop through results, adding each record to the array list
+					for (int i=0;rs.next();i++)
+					{
+						result.add(rs.getString(i));
+					}
+					result.trimToSize();
+				}
+			}catch (SQLException resulte)
+			{
+				resulte.printStackTrace();
+			}	
 			rs.close();
 		}catch (SQLException sqle){
 			sqle.printStackTrace();
@@ -51,6 +66,7 @@ public class warehouseJDBC {
 			}
 		}
 		System.out.println("Connection to the database has been closed.");
+		return result;
 	}
 	
 	public void createDB(String sqlCreate)

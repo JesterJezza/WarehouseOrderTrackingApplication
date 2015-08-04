@@ -1,4 +1,10 @@
 package warehouseOrderTrackingApplication;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 public class customerOrder {
 	
@@ -64,7 +70,33 @@ public class customerOrder {
 	
 	public void printOrders()
 	{
+		warehouseJDBC orderPrint = new warehouseJDBC();
+		ArrayList<String> custResult = new ArrayList<String>();
+		String sqlReadCustomer = "SELECT * FROM customerOrder";
+		custResult = orderPrint.readDB(sqlReadCustomer);
+		//HANDLE PRINT OF ARRAYLIST
+		System.out.println("##################################################");
+		System.out.println("Records obtained from the Customer Order table:");
+		printArrayList(custResult);
 		
+		ArrayList<String> purchResult = new ArrayList<String>();
+		String sqlReadPurchase = "SELECT * FROM purchaseOrder";
+		purchResult = orderPrint.readDB(sqlReadPurchase);
+		System.out.println("##################################################");
+		System.out.println("Records obtained from the Purchase Order table:");
+		printArrayList(purchResult);
+		
+	}
+	
+	public void printArrayList(ArrayList<String> arrayList)
+	{
+		int loop = arrayList.size();
+		for (int i = 0; i < loop; i++)
+		{
+			System.out.println(arrayList.get(i).toString());
+		}
+		System.out.println("##################################################");
+		System.out.println("End of records.");
 	}
 	
 	public static void main(String[] args) {
