@@ -27,15 +27,15 @@ public class warehouseJDBC {
 			ResultSet rs = stmt.executeQuery(sqlRead);
 			System.out.println(rs.toString());
 			try {
-				int resultLength = rs.getFetchSize();
 				
-				if (resultLength > 0)
+				if (rs.next() != false)
 				{
 					//Cast results to an array list of type string 
 					//Loop through results, adding each record to the array list
-					for (int i=0;rs.next();i++)
+					for (int i=1;rs.next();i++)
 					{
 						result.add(rs.getString(i));
+						//*********FIX THIS**************8
 					}
 					result.trimToSize();
 				}
