@@ -14,7 +14,10 @@ public class App {
 			
 			customerOrder test = new customerOrder();
 			test.printOrders();
-			System.out.println("FINISHED.");
+			
+			purchaseOrder test2 = new purchaseOrder();
+			test2.printOrders();
+			//System.out.println("FINISHED.");
 	}
 
 }
