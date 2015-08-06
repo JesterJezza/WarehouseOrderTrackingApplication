@@ -8,22 +8,26 @@ public class OrderItem {
 	private int orderItemQuantity;
 	private float orderItemCost;
 	private float totalItemCost;
-
 	
-	public OrderItem()
-	{
-		
-	}
+	public OrderItem(){}
 	
 	public OrderItem(int ordID, int custID, int itID, int ordItQ, float ordItC, float totItC)
 	{
 		setOrderID(ordID);
-		customerID = custID;
+		setCustomerID(custID);
 		setItemID(itID);
 		setOrderItemQuantity(ordItQ);
 		setOrderItemCost(ordItC);
 		setTotalItemCost(totItC);
-		
+	}
+	
+	public OrderItem(int custID, int itID, int ordItQ, float ordItC, float totItC)
+	{
+		setCustomerID(custID);
+		setItemID(itID);
+		setOrderItemQuantity(ordItQ);
+		setOrderItemCost(ordItC); 
+		setTotalItemCost(totItC);
 	}
 
 	@Override
@@ -72,6 +76,14 @@ public class OrderItem {
 
 	public void setItemID(int itemID) {
 		this.itemID = itemID;
+	}
+	
+	public int getCustomerID() {
+		return customerID;
+	}
+	
+	public void setCustomerID(int customerID) {
+		this.customerID = customerID;
 	}
 	
 }

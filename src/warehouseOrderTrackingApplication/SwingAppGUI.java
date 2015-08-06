@@ -84,7 +84,7 @@ public class SwingAppGUI extends JFrame {
 			String command = ae.getActionCommand();
 			switch (command) {
 				case "Display": 
-					CustomerOrder cust = new CustomerOrder();
+					//CustomerOrder cust = new CustomerOrder();
 					statusLabel.setText("Displaying Customer Orders and Purchase Orders.");
 					
 					break;

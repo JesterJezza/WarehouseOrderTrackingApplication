@@ -92,9 +92,9 @@ public class WarehouseJDBC {
 					boolean isCheckedOut = rs.getBoolean("isCheckedOut");
 					String eOrderStatus = rs.getString("eOrderStatus");
 					int employeeID = rs.getInt("employeeID");
-
 					ArrayList<OrderItem> itemList = new ArrayList<OrderItem>();	
 					itemList = getItems(String.valueOf(custID), String.valueOf(custOrderID));
+					
 					CustomerOrder getCust = new CustomerOrder(custOrderID, custID, orderTotal, deliveryAddress, isCheckedOut, eOrderStatus, employeeID, itemList);
 					custList.add(getCust);
 					
@@ -235,6 +235,112 @@ public class WarehouseJDBC {
 			}
 		}
 		System.out.println("Connection to the database has been closed.");
+	}
+	
+	public int getOrderID(PurchaseOrder purch)
+	{
+		int retOrderID = 0;
+		Connection conn = null;
+		Statement stmt = null;
+		String supplierID = String.valueOf(purch.getSupplierID());
+		String orderTotal = String.valueOf(purch.getOrderTotal());
+		String sql = "SELECT purOrderID FROM purchaseorder WHERE supplierID ='"+supplierID+"' AND orderTotal ='"+orderTotal+"'";
+		ResultSet rs;
+		
+		try
+		{
+			Class.forName(jdbcDriver);
+			System.out.println("Connecting to database...");
+			conn = DriverManager.getConnection(dbURL, user, pass);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			
+			while (rs.next())
+			{
+				retOrderID = rs.getInt("purOrderID");
+				//System.out.println(retOrderID);
+				break;
+			}
+		}
+		catch (SQLException sqle)
+		{
+			sqle.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return retOrderID;
+	}
+	
+	public void createPurchaseOrderDB(PurchaseOrder purch)
+	{
+		Connection conn = null;
+		Statement stmt = null;
+		String sql = "INSERT INTO purchaseorder (supplierID,supplierName,orderTotal) VALUES ('"+String.valueOf(purch.getSupplierID())+"','"+purch.getSupplierName()+"','"+String.valueOf(purch.getOrderTotal())+"')";
+		//System.out.println(sql);
+		try 
+		{
+			Class.forName(jdbcDriver);
+			System.out.println("Connecting to database...");
+			conn = DriverManager.getConnection(dbURL, user, pass);
+			stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+		}
+		catch (SQLException sqle)
+		{
+			sqle.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		int orderID = getOrderID(purch);
+		//System.out.println(orderID);
+		createOrderItemDB(purch, orderID);
+	}
+	
+	public void createOrderItemDB(PurchaseOrder purch, int orderID)
+	{
+		
+		Connection conn = null;
+		Statement stmt = null;
+		ArrayList<OrderItem> itemList = purch.getOrderItemList();
+		int size = itemList.size();
+		String sql = "INSERT INTO orderitem VALUES ('";
+		for (int i = 0; i < size; i++)
+		{
+			OrderItem o = itemList.get(i);
+			sql = sql + String.valueOf(orderID)+"','"+String.valueOf(o.getCustomerID())+"','"+String.valueOf(o.getItemID())+"','"+String.valueOf(o.getOrderItemQuantity())+"','"+String.valueOf(o.getOrderItemCost())+"','"+String.valueOf(o.getTotalItemCost())+"';";			
+			if ((i+1) < size)
+			{
+				sql = sql + "INSERT INTO orderitem VALUES ('";
+			}
+			else
+			{
+				sql = sql + ")";
+			}
+		}
+		System.out.println(sql);
+		
+		
+		try 
+		{
+			Class.forName(jdbcDriver);
+			System.out.println("Connecting to database...");
+			conn = DriverManager.getConnection(dbURL, user, pass);
+			stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+		}
+		catch (SQLException sqle)
+		{
+			sqle.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public void updateDB(String sqlUpdate)

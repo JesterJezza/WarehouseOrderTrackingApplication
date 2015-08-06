@@ -15,10 +15,71 @@ public class CustomerOrder {
 	private int employeeID;
 	private ArrayList<OrderItem> orderItemList;
 	
-	public CustomerOrder()
-	{
-		
+	public int getCustOrderID() {
+		return custOrderID;
 	}
+
+	public void setCustOrderID(int custOrderID) {
+		this.custOrderID = custOrderID;
+	}
+
+	public int getCustID() {
+		return custID;
+	}
+
+	public void setCustID(int custID) {
+		this.custID = custID;
+	}
+
+	public float getOrderTotal() {
+		return orderTotal;
+	}
+
+	public void setOrderTotal(float orderTotal) {
+		this.orderTotal = orderTotal;
+	}
+
+	public String getDeliveryAddress() {
+		return deliveryAddress;
+	}
+
+	public void setDeliveryAddress(String deliveryAddress) {
+		this.deliveryAddress = deliveryAddress;
+	}
+
+	public boolean isCheckedOut() {
+		return isCheckedOut;
+	}
+
+	public void setCheckedOut(boolean isCheckedOut) {
+		this.isCheckedOut = isCheckedOut;
+	}
+
+	public orderStatus geteOrderStatus() {
+		return eOrderStatus;
+	}
+
+	public void seteOrderStatus(orderStatus eOrderStatus) {
+		this.eOrderStatus = eOrderStatus;
+	}
+
+	public int getEmployeeID() {
+		return employeeID;
+	}
+
+	public void setEmployeeID(int employeeID) {
+		this.employeeID = employeeID;
+	}
+
+	public ArrayList<OrderItem> getOrderItemList() {
+		return orderItemList;
+	}
+
+	public void setOrderItemList(ArrayList<OrderItem> orderItemList) {
+		this.orderItemList = orderItemList;
+	}
+
+	public CustomerOrder() {}
 	
 	@Override
 	public String toString() {
@@ -31,14 +92,14 @@ public class CustomerOrder {
 	
 	public CustomerOrder(int oID, int cID, float oTotal, String devAd, boolean checkOut, String oS, int emID, ArrayList<OrderItem> orItLst)
 	{
-		custOrderID = oID;
-		custID = cID;
-		orderTotal = oTotal;
-		deliveryAddress = devAd;
+		setCustOrderID(oID);
+		setCustID(cID);
+		setOrderTotal(oTotal);
+		setDeliveryAddress(devAd);
 		isCheckedOut = checkOut;
-		eOrderStatus = orderStatus.valueOf(oS);
-		employeeID = emID;
-		orderItemList = orItLst;
+		seteOrderStatus(orderStatus.valueOf(oS));
+		setEmployeeID(emID);
+		setOrderItemList(orItLst);
 	}
 		
 	public enum orderStatus
@@ -117,13 +178,15 @@ public class CustomerOrder {
 			System.out.println("Delivery Address   : "+ custOrder.deliveryAddress);
 			System.out.println("Order Status       : "+ custOrder.eOrderStatus.toString());
 			System.out.println("Employee ID        : "+ String.valueOf(custOrder.employeeID));
-			System.out.println("Order Cost Total   : "+ String.valueOf(custOrder.orderTotal));
+			System.out.println("Order Cost Total   : £"+ String.valueOf(custOrder.orderTotal));
 			System.out.println("Order Checked Out  : "+ String.valueOf(custOrder.isCheckedOut));
 			System.out.println("######################");
 			System.out.println("Order Item details:");
 			ArrayList<OrderItem> orderList = custOrder.orderItemList;
 			int size2 = orderList.size();
-			for (int j = 0; j < size2; j++) {
+			
+			for (int j = 0; j < size2; j++) 
+			{
 				OrderItem ordItem = orderList.get(j);
 				System.out.println("######################");
 				System.out.println("Item ID            : "+ String.valueOf(ordItem.getItemID()));
@@ -137,14 +200,18 @@ public class CustomerOrder {
 		System.out.println("Would you like to see the list of Customer Orders currently being worked upon? (Y/N)");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String input ="";
-		try {
+		try 
+		{
 			input = br.readLine();
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		switch (input) {
+		switch (input) 
+		{
 			case "Y": 
 				System.out.println("#############################################");
 				System.out.println("Customer Orders currently being worked upon:");
