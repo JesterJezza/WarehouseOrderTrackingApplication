@@ -1,7 +1,7 @@
 package warehouseOrderTrackingApplication;
 
 
-public class customer {
+public class Customer {
 	
 	private int customerID;
 	private String custName;

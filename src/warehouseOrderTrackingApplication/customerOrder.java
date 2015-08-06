@@ -1,7 +1,10 @@
 package warehouseOrderTrackingApplication;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.io.IOException;
 
-public class customerOrder {
+public class CustomerOrder {
 	
 	private int custOrderID;
 	private int custID;
@@ -12,11 +15,21 @@ public class customerOrder {
 	private int employeeID;
 	private ArrayList<OrderItem> orderItemList;
 	
-	public customerOrder()
+	public CustomerOrder()
 	{
 		
 	}
-	public customerOrder(int oID, int cID, float oTotal, String devAd, boolean checkOut, String oS, int emID, ArrayList<OrderItem> orItLst)
+	
+	@Override
+	public String toString() {
+		return "CustomerOrder [custOrderID=" + custOrderID + ", custID="
+				+ custID + ", orderTotal=" + orderTotal + ", deliveryAddress="
+				+ deliveryAddress + ", isCheckedOut=" + isCheckedOut
+				+ ", eOrderStatus=" + eOrderStatus + ", employeeID="
+				+ employeeID + ", orderItemList=" + orderItemList + "]";
+	}
+	
+	public CustomerOrder(int oID, int cID, float oTotal, String devAd, boolean checkOut, String oS, int emID, ArrayList<OrderItem> orItLst)
 	{
 		custOrderID = oID;
 		custID = cID;
@@ -84,31 +97,77 @@ public class customerOrder {
 	
 	public void printOrders()
 	{
-		warehouseJDBC orderPrint = new warehouseJDBC();
-		ArrayList<customerOrder> resultCust = orderPrint.returnCustOrder();
+		WarehouseJDBC orderPrint = new WarehouseJDBC();
+		ArrayList<CustomerOrder> resultCust = orderPrint.returnCustOrder();
 		printArrayCust(resultCust);
 	}
 	
-	public void printArrayCust(ArrayList<customerOrder> custList)
+	public void printArrayCust(ArrayList<CustomerOrder> custList)
 	{
+		System.out.println("#############################################");
 		System.out.println("Results obtained from Customer Order Table:");
 		System.out.println("#############################################");
 		int size = custList.size();
 		
 		for (int i = 0; i < size; i++)
 		{
-			customerOrder custOrder = custList.get(i);
-			System.out.println("Customer Order ID: "+ String.valueOf(custOrder.custOrderID));
-			System.out.println("Customer ID      : "+ String.valueOf(custOrder.custID));
-			System.out.println("Delivery Address : "+ custOrder.deliveryAddress);
-			System.out.println("Order Status     : "+ custOrder.eOrderStatus.toString());
-			System.out.println("Employee ID      : "+ String.valueOf(custOrder.employeeID));
-			System.out.println("Order Cost Total : "+ String.valueOf(custOrder.orderTotal));
-			System.out.println("Order Checked Out: "+ String.valueOf(custOrder.isCheckedOut));
+			CustomerOrder custOrder = custList.get(i);
+			System.out.println("Customer Order ID  : "+ String.valueOf(custOrder.custOrderID));
+			System.out.println("Customer ID        : "+ String.valueOf(custOrder.custID));
+			System.out.println("Delivery Address   : "+ custOrder.deliveryAddress);
+			System.out.println("Order Status       : "+ custOrder.eOrderStatus.toString());
+			System.out.println("Employee ID        : "+ String.valueOf(custOrder.employeeID));
+			System.out.println("Order Cost Total   : "+ String.valueOf(custOrder.orderTotal));
+			System.out.println("Order Checked Out  : "+ String.valueOf(custOrder.isCheckedOut));
+			System.out.println("######################");
+			System.out.println("Order Item details:");
+			ArrayList<OrderItem> orderList = custOrder.orderItemList;
+			int size2 = orderList.size();
+			for (int j = 0; j < size2; j++) {
+				OrderItem ordItem = orderList.get(j);
+				System.out.println("######################");
+				System.out.println("Item ID            : "+ String.valueOf(ordItem.getItemID()));
+				System.out.println("Order Item Quantity: "+ String.valueOf(ordItem.getOrderItemQuantity()));
+				System.out.println("Order Item Cost    : £"+ String.valueOf(ordItem.getOrderItemCost()));
+				System.out.println("Total Item Cost    : £"+ String.valueOf(ordItem.getTotalItemCost()));
+			}
 			System.out.println("#############################################");
 		}
 		
+		System.out.println("Would you like to see the list of Customer Orders currently being worked upon? (Y/N)");
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String input ="";
+		try {
+			input = br.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		switch (input) {
+			case "Y": 
+				System.out.println("#############################################");
+				System.out.println("Customer Orders currently being worked upon:");
+				System.out.println("#############################################");
+				
+				for (int i = 0; i < size; i++)
+				{
+					CustomerOrder workedOn = custList.get(i);
+					if (workedOn.isCheckedOut == true)
+					{
+						System.out.println("Customer Order ID  : "+ String.valueOf(workedOn.custOrderID));
+						System.out.println("Customer ID        : "+ String.valueOf(workedOn.custID));
+						System.out.println("Order Status       : "+ workedOn.eOrderStatus.toString());
+						System.out.println("######################");							
+					}
+				}
+				
+				System.out.println("#############################################");
+				break;
+			case "N":
+				break;
+			case "":
+				break;
+		}
 	}
-	
-
 }

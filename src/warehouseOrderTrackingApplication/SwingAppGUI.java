@@ -30,13 +30,14 @@ public class SwingAppGUI extends JFrame {
 	
 	private void prepareGUI() 
 	{
-		mainFrame = new JFrame("Java SWING Examples");
-		mainFrame.setSize(400, 400);
+		mainFrame = new JFrame("NBGardens Warehouse Order Tracking Application");
+		mainFrame.setSize(800, 800);
 		mainFrame.setLayout(new GridLayout(3,1));
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		headerLabel = new JLabel("",JLabel.CENTER);
 		statusLabel = new JLabel("",JLabel.CENTER);
-		statusLabel.setSize(350, 100);
+		statusLabel.setSize(550, 300);
 		
 		mainFrame.addWindowListener(new WindowAdapter()
 		{
@@ -83,7 +84,9 @@ public class SwingAppGUI extends JFrame {
 			String command = ae.getActionCommand();
 			switch (command) {
 				case "Display": 
-					customerOrder cust = new customerOrder();
+					CustomerOrder cust = new CustomerOrder();
+					statusLabel.setText("Displaying Customer Orders and Purchase Orders.");
+					
 					break;
 				case "Submit":
 					statusLabel.setText("Submitted!");

@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class warehouseJDBC {
+public class WarehouseJDBC {
 
 	static final String jdbcDriver = "com.mysql.jdbc.Driver";
 	static final String dbURL = "jdbc:mysql://127.0.0.1:3306/mydb";
@@ -21,14 +21,13 @@ public class warehouseJDBC {
 		Statement stmt = null;
 		ResultSet rs;
 		ArrayList<OrderItem> itemList = new ArrayList<OrderItem>();
+		System.out.println("Connecting to database...");
 		
 		try
 		{
 			Class.forName(jdbcDriver);
-			System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(dbURL,user,pass);
 			stmt = conn.createStatement();
-			
 			rs = stmt.executeQuery("SELECT * FROM orderitem WHERE orderID = " + String.valueOf(custOrderID) + " AND customerID = " + String.valueOf(custID));
 			
 			try 
@@ -68,17 +67,16 @@ public class warehouseJDBC {
 		return itemList;
 	}
 	
-	public ArrayList<customerOrder> returnCustOrder()
+	public ArrayList<CustomerOrder> returnCustOrder()
 	{
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs;
-		ArrayList<customerOrder> custList = new ArrayList<customerOrder>();
-		
+		ArrayList<CustomerOrder> custList = new ArrayList<CustomerOrder>();
+		System.out.println("Connecting to database...");
 		try 
 		{
 			Class.forName(jdbcDriver);
-			System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(dbURL, user, pass);
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM customerorder");
@@ -97,7 +95,7 @@ public class warehouseJDBC {
 
 					ArrayList<OrderItem> itemList = new ArrayList<OrderItem>();	
 					itemList = getItems(String.valueOf(custID), String.valueOf(custOrderID));
-					customerOrder getCust = new customerOrder(custOrderID, custID, orderTotal, deliveryAddress, isCheckedOut, eOrderStatus, employeeID, itemList);
+					CustomerOrder getCust = new CustomerOrder(custOrderID, custID, orderTotal, deliveryAddress, isCheckedOut, eOrderStatus, employeeID, itemList);
 					custList.add(getCust);
 					
 				}
@@ -121,21 +119,20 @@ public class warehouseJDBC {
 		return custList;
 	}
 	
-	public ArrayList<purchaseOrder> returnPurchOrder()
+	public ArrayList<PurchaseOrder> returnPurchOrder()
 	{
 		Connection conn = null;
 		Statement stmt = null;
-		Statement stmt2 = null;
 		ResultSet rs;
-		ResultSet rs2;
-		ArrayList<purchaseOrder> purchaseList = new ArrayList<purchaseOrder>();
+	
+		ArrayList<PurchaseOrder> purchaseList = new ArrayList<PurchaseOrder>();
+		System.out.println("Connecting to database...");
+		
 		try 
 		{
-			Class.forName(jdbcDriver);
-			System.out.println("Connecting to database...");
+			Class.forName(jdbcDriver);	
 			conn = DriverManager.getConnection(dbURL, user, pass);
 			stmt = conn.createStatement();
-			stmt2 = conn.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM purchaseorder");
 			
 			try 
@@ -149,7 +146,7 @@ public class warehouseJDBC {
 					
 					ArrayList<OrderItem> itemList = new ArrayList<OrderItem>();	
 					itemList = getItems(String.valueOf(supplierID), String.valueOf(purchaseOrderID));
-					purchaseOrder getPurchase = new purchaseOrder(purchaseOrderID, supplierID, supplierName, orderTotal, itemList);
+					PurchaseOrder getPurchase = new PurchaseOrder(purchaseOrderID, supplierID, supplierName, orderTotal, itemList);
 					purchaseList.add(getPurchase);
 					
 				}
