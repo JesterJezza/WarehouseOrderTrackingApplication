@@ -112,7 +112,7 @@ public class CustomerOrder {
 		this.isCheckedOut = true;
 	}
 	
-	public void updateOrderStatus()
+	public void updateOrderStatus(ArrayList<OrderItem> itemList, int orderID)
 	{
 		int switchInt = 0;
 		if (eOrderStatus == orderStatus.CONFIRMED)
@@ -135,10 +135,13 @@ public class CustomerOrder {
 				break;
 			case 2: 
 				eOrderStatus = orderStatus.PICKING;
+				this.setCheckedOut(true);
+				updateStockLevel(itemList, orderID);
 				switchInt = 0;
 				break;
 			case 3:
 				eOrderStatus = orderStatus.PACKING;
+				removeStockAllocation(itemList, orderID);
 				switchInt = 0;
 				break;
 			case 4:
@@ -235,6 +238,31 @@ public class CustomerOrder {
 				break;
 			case "":
 				break;
+		}
+	}
+	
+	public void updateStockLevel(ArrayList<OrderItem> itemList, int orderID)
+	{
+		int size = itemList.size();
+		for (int i=0;i<size;i++)
+		{
+			OrderItem item = itemList.get(i);
+			WarehouseJDBC upStock = new WarehouseJDBC();
+			int currentStock = upStock.getCurrentStock(item.getItemID());
+			upStock.updateStock(item, currentStock);
+		}
+	}
+	
+	public void removeStockAllocation(ArrayList<OrderItem> itemList, int orderID)
+	{
+		int size = itemList.size();
+		for (int i=0;i<size;i++)
+		{
+			OrderItem item = itemList.get(i);
+			WarehouseJDBC remAlloc = new WarehouseJDBC();
+			int quantity = item.getOrderItemQuantity();
+			int itemID = item.getItemID();
+			remAlloc.removeStockAllocation(itemID, quantity);
 		}
 	}
 }

@@ -343,6 +343,148 @@ public class WarehouseJDBC {
 		}
 	}
 	
+	public int getCurrentStock(int itemID)
+	{
+		int currentStock=0;
+		boolean flag = false;
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs;
+		String sql = "SELECT stockLevel FROM item WHERE iditem='"+String.valueOf(itemID)+"';";
+		try 
+		{
+			Class.forName(jdbcDriver);
+			conn = DriverManager.getConnection(dbURL, user, pass);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			
+			while (rs.next())
+			{
+				currentStock = rs.getInt("stockLevel");
+				flag = true;
+			}
+		}
+		catch (SQLException sqle)
+		{
+			sqle.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		if (flag == false)
+			System.out.println("Could not retrieve information from database.");
+		return currentStock;
+	}
+	
+	public int getAllocatedStock(int itemID)
+	{
+		int allocatedStock=0;
+		boolean flag = false;
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs;
+		String sql = "SELECT allocatedStock FROM item WHERE iditem='"+String.valueOf(itemID)+"';";
+		
+		try
+		{
+			Class.forName(jdbcDriver);
+			conn = DriverManager.getConnection(dbURL, user, pass);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			
+			while (rs.next())
+			{
+				allocatedStock = rs.getInt("allocatedStock");
+				flag = true;
+			}
+		}
+		catch (SQLException sqle)
+		{
+			sqle.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		if (flag == false)
+			System.out.println("Could not retrieve information from database.");
+		
+		return allocatedStock;
+	}
+	
+	public void updateStock(OrderItem item, int currentStock)
+	{
+		Connection conn = null;
+		Statement stmt = null;
+		int stockAdjustment = currentStock - item.getOrderItemQuantity();
+		try
+		{
+			Class.forName(jdbcDriver);
+			conn = DriverManager.getConnection(dbURL, user, pass);
+			stmt = conn.createStatement();
+			String sql ="UPDATE item SET stockLevel='"+stockAdjustment+"' WHERE iditem='"+item.getItemID()+";";
+			stmt.executeUpdate(sql);
+			updateStockAllocation(item.getItemID(),item.getOrderItemQuantity());
+			
+		}
+		catch (SQLException sqle)
+		{
+			sqle.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateStockAllocation(int itemID, int itemQuantity)
+	{
+		Connection conn = null;
+		Statement stmt = null;
+		try
+		{
+			Class.forName(jdbcDriver);
+			conn = DriverManager.getConnection(dbURL, user, pass);
+			stmt = conn.createStatement();
+			String sql ="UPDATE item SET allocatedStock='"+String.valueOf(itemQuantity)+"' WHERE iditem='"+String.valueOf(itemID)+"';";
+			stmt.executeUpdate(sql);
+			conn.close();			
+		}
+		catch (SQLException sqle)
+		{
+			sqle.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void removeStockAllocation(int itemID, int itemQuantity)
+	{
+		Connection conn = null;
+		Statement stmt = null;
+		int allocatedStock = getAllocatedStock(itemID);
+		int allStockAdj = allocatedStock - itemQuantity;
+		String sql = "UPDATE item SET allocatedStock='"+String.valueOf(allStockAdj)+"' WHERE iditem ='"+String.valueOf(itemID)+"';";
+		try 
+		{
+			Class.forName(jdbcDriver);
+			conn = DriverManager.getConnection(dbURL, user, pass);
+			stmt = conn.createStatement();
+			stmt.executeQuery(sql);
+		}
+		catch (SQLException sqle)
+		{
+			sqle.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	public void updateDB(String sqlUpdate)
 	{
 		Connection conn = null;
