@@ -110,8 +110,9 @@ public void printArrayPur(ArrayList<PurchaseOrder> purList)
 	}
 }
 
-public void addPurchaseOrder()
+public PurchaseOrder addPurchaseOrder()
 {
+	PurchaseOrder addPurch = new PurchaseOrder();
 	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	try {
 		System.out.println("Please enter the Supplier ID:");
@@ -138,7 +139,7 @@ public void addPurchaseOrder()
 			itemList.add(o);
 		}
 		
-			PurchaseOrder addPurch = new PurchaseOrder(suppID, suppName, purCost, itemList);
+			addPurch = new PurchaseOrder(suppID, suppName, purCost, itemList);
 			WarehouseJDBC createPurch = new WarehouseJDBC();
 			createPurch.createPurchaseOrderDB(addPurch);		
 	} catch (NumberFormatException e) {
@@ -148,8 +149,7 @@ public void addPurchaseOrder()
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-	
-	
+	return addPurch;
 }
 
 }

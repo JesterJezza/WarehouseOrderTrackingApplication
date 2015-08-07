@@ -107,11 +107,6 @@ public class CustomerOrder {
 		CONFIRMED, INQUEUE, PICKING, PACKING, DISPATCHING, DISPATCHED
 	}
 	
-	public void orderCheckOut()
-	{
-		this.isCheckedOut = true;
-	}
-	
 	public void updateOrderStatus(ArrayList<OrderItem> itemList, int orderID)
 	{
 		int switchInt = 0;

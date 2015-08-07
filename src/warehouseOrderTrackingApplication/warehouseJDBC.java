@@ -343,6 +343,48 @@ public class WarehouseJDBC {
 		}
 	}
 	
+	public ArrayList<Item> getPorousItems(int iditem)
+	{
+		Connection conn = null;
+		Statement stmt = null;
+		ArrayList<Item> nonPorousItems = new ArrayList<Item>();
+		ResultSet rs;
+		String sql = "SELECT * FROM item WHERE iditem='"+String.valueOf(iditem)+"';";
+		try 
+		{
+			Class.forName(jdbcDriver);
+			conn = DriverManager.getConnection(dbURL, user, pass);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			
+			while (rs.next())
+			{
+				int itemID = rs.getInt("iditem");
+				String itemName = rs.getString("itemName");
+				String itemDesc = rs.getString("itemDesc");
+				float itemWeight = rs.getFloat("itemWeight");
+				float itemCost = rs.getFloat("itemCost");
+				float itemSaleVal = rs.getFloat("itemSaleVal");
+				boolean porous = rs.getBoolean("porous");
+				int stockLevel = rs.getInt("stockLevel");
+				int allocatedStock = rs.getInt("allocatedStock");
+				String warehouseLocation = rs.getString("warehouseLocation");
+				Item i = new Item(itemID, itemName, itemDesc, itemWeight, itemCost, itemSaleVal, porous, stockLevel, allocatedStock, warehouseLocation);
+				nonPorousItems.add(i);
+			}
+		}
+		catch (SQLException sqle)
+		{
+			sqle.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return nonPorousItems;
+	}
+	
 	public int getCurrentStock(int itemID)
 	{
 		int currentStock=0;
