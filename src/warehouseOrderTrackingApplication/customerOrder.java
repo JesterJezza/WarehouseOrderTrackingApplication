@@ -101,10 +101,27 @@ public class CustomerOrder {
 		setEmployeeID(emID);
 		setOrderItemList(orItLst);
 	}
-		
+	
+	public CustomerOrder(int oID, int cID, float oTotal, String devAd, String oS, ArrayList<OrderItem> itLst)
+	{
+		setCustOrderID(oID);
+		setCustID(cID);
+		setOrderTotal(oTotal);
+		setDeliveryAddress(devAd);
+		seteOrderStatus(orderStatus.valueOf(oS));
+		setOrderItemList(itLst);
+	}
+	
 	public enum orderStatus
 	{
 		CONFIRMED, INQUEUE, PICKING, PACKING, DISPATCHING, DISPATCHED
+	}
+	
+	public void checkOutOrder(ArrayList<OrderItem> itemList, int orderID)
+	{
+		this.updateOrderStatus(itemList, orderID);
+		WarehouseJDBC jdbc = new WarehouseJDBC();
+		jdbc.checkOutOrder(orderID, this.getCustID());
 	}
 	
 	public void updateOrderStatus(ArrayList<OrderItem> itemList, int orderID)
@@ -161,11 +178,21 @@ public class CustomerOrder {
 		printArrayCust(resultCust);
 	}
 	
+	/*public String printOrdersGUI()
+	{
+		WarehouseJDBC orderPrint = new WarehouseJDBC();
+		ArrayList<CustomerOrder> resultCust = orderPrint.returnCustOrder();
+		String result = printArrayCust(resultCust);
+		return result;
+	}*/
+	
+	
 	public void printArrayCust(ArrayList<CustomerOrder> custList)
 	{
-		System.out.println("#############################################");
+		//String res = "Results:";
+		/*System.out.println("#############################################");
 		System.out.println("Results obtained from Customer Order Table:");
-		System.out.println("#############################################");
+		System.out.println("#############################################");*/
 		int size = custList.size();
 		
 		for (int i = 0; i < size; i++)
@@ -181,6 +208,15 @@ public class CustomerOrder {
 			System.out.println("######################");
 			System.out.println("Order Item details:");
 			ArrayList<OrderItem> orderList = custOrder.orderItemList;
+			/*res = res + "Customer Order ID: "+ String.valueOf(custOrder.custOrderID)+
+			"Customer ID: "+ String.valueOf(custOrder.custID)+
+			"Delivery Address: "+ custOrder.deliveryAddress+
+			"Order Status: "+ custOrder.eOrderStatus.toString()+
+			"Employee ID: "+ String.valueOf(custOrder.employeeID)+
+			"Order Cost Total: £"+ String.valueOf(custOrder.orderTotal)+
+			"Order Checked Out: "+ String.valueOf(custOrder.isCheckedOut)+
+			"##"+
+			"Order Item details:";*/
 			int size2 = orderList.size();
 			
 			for (int j = 0; j < size2; j++) 
@@ -191,9 +227,15 @@ public class CustomerOrder {
 				System.out.println("Order Item Quantity: "+ String.valueOf(ordItem.getOrderItemQuantity()));
 				System.out.println("Order Item Cost    : £"+ String.valueOf(ordItem.getOrderItemCost()));
 				System.out.println("Total Item Cost    : £"+ String.valueOf(ordItem.getTotalItemCost()));
+				/*res = res +"##"+
+				"Item ID: "+ String.valueOf(ordItem.getItemID())+
+				"Order Item Quantity: "+ String.valueOf(ordItem.getOrderItemQuantity())+
+				"Order Item Cost    : £"+ String.valueOf(ordItem.getOrderItemCost())+
+				"Total Item Cost: £"+ String.valueOf(ordItem.getTotalItemCost());*/
 			}
-			System.out.println("#############################################");
+			//res = res + "####";
 		}
+		//return res;
 		
 		System.out.println("Would you like to see the list of Customer Orders currently being worked upon? (Y/N)");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

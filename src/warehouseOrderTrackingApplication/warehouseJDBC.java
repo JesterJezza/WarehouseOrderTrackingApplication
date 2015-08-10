@@ -237,6 +237,95 @@ public class WarehouseJDBC {
 		System.out.println("Connection to the database has been closed.");
 	}
 	
+	public ArrayList<CustomerOrder> getBacklog()
+	{
+		Connection conn = null; 
+		Statement stmt = null;
+		String sql = "SELECT * FROM customerorder WHERE eOrderStatus='CONFIRMED'";
+		ResultSet rs;
+		ArrayList<CustomerOrder> backlogList = new ArrayList<CustomerOrder>();
+		try 
+		{
+			Class.forName(jdbcDriver);
+			conn = DriverManager.getConnection(dbURL, user, pass);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			
+			while (rs.next())
+			{
+				int custOrderID = rs.getInt("idcustomerOrder");
+				int custID = rs.getInt("idcustomer");
+				float orderTotal = rs.getFloat("orderTotal");
+				String deliveryAddress = rs.getString("deliveryAddress");
+				String eOrderStatus = rs.getString("eOrderStatus");
+				ArrayList<OrderItem> itemList = getBacklogItems(custOrderID, custID);
+				CustomerOrder backlogItem = new CustomerOrder(custOrderID,custID,orderTotal,deliveryAddress,eOrderStatus, itemList);
+				backlogList.add(backlogItem);
+			}
+		}
+		catch (SQLException sqle)
+		{
+			sqle.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return backlogList;
+	}
+	
+	public ArrayList<OrderItem> getBacklogItems(int oID, int cID)
+	{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs;
+		ArrayList<OrderItem> itemList = new ArrayList<OrderItem>();
+		System.out.println("Connecting to database...");
+		
+		try
+		{
+			Class.forName(jdbcDriver);
+			conn = DriverManager.getConnection(dbURL,user,pass);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM orderitem WHERE orderID = " + String.valueOf(oID) + " AND customerID = " + String.valueOf(cID));
+			
+			try 
+			{
+				while(rs.next())
+				{
+					int orderID = rs.getInt("orderID");
+					int customerID = rs.getInt("customerID");
+					int itemID = rs.getInt("itemID");
+					int orderItemQuantity = rs.getInt("orderItemQuantity");
+					float orderItemCost = rs.getFloat("orderItemCost");
+					float totalItemCost = rs.getFloat("totalItemCost");
+					OrderItem getItem = new OrderItem(orderID, customerID, itemID, orderItemQuantity,orderItemCost, totalItemCost);
+					itemList.add(getItem);
+				}
+			}
+			catch (SQLException sqle)
+			{
+				sqle.printStackTrace();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			rs.close();
+			
+		}
+		catch (SQLException sqle)
+		{
+			sqle.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return itemList;
+	}
+	
 	public int getOrderID(PurchaseOrder purch)
 	{
 		int retOrderID = 0;
@@ -271,6 +360,37 @@ public class WarehouseJDBC {
 			e.printStackTrace();
 		}
 		return retOrderID;
+	}
+	
+	public String getOrderLocation(int itemID)
+	{
+		String itemLocation = "";
+		Connection conn = null;
+		Statement stmt = null;
+		String sql = "SELECT warehouseLocation FROM item WHERE iditem ='"+String.valueOf(itemID)+"';";
+		ResultSet rs;
+		try 
+		{
+			Class.forName(jdbcDriver);
+			conn = DriverManager.getConnection(dbURL, user, pass);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			
+			while (rs.next())
+			{
+				itemLocation = rs.getString("warehouseLocation");
+			}
+		}
+		catch (SQLException sqle)
+		{
+			sqle.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return itemLocation;
 	}
 	
 	public void createPurchaseOrderDB(PurchaseOrder purch)
@@ -453,6 +573,29 @@ public class WarehouseJDBC {
 			System.out.println("Could not retrieve information from database.");
 		
 		return allocatedStock;
+	}
+	
+	public void checkOutOrder(int orderID, int custID)
+	{
+		Connection conn = null;
+		Statement stmt = null;
+		String sql = "UPDATE customerorder SET eOrderStatus ='PICKING', isCheckedOut='1' WHERE idcustomerorder='"+String.valueOf(orderID)+"';";
+	
+		try
+		{
+			Class.forName(jdbcDriver);
+			conn = DriverManager.getConnection(dbURL, user, pass);
+			stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+		}
+		catch (SQLException sqle)
+		{
+			sqle.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public void updateStock(OrderItem item, int currentStock)

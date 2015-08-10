@@ -5,24 +5,30 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
+
 public class App {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//SwingAppGUI swg = new SwingAppGUI();
 		//swg.swing();
-		
+		newGUI gui = new newGUI();
+		gui.setSize(950,650);
+		gui.setVisible(true);
+		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		//String testSQL = "INSERT INTO customerorder (orderTotal, deliveryAddress, isCheckedOut, eOrderStatus, idcustomer) VALUES ('234','qwerwqerqwe','0','CONFIRMED','1')";
 		//warehouseJDBC testJDBC = new warehouseJDBC();
 		//testJDBC.createDB(testSQL);
-		boolean flag = false;
+		/*boolean flag = false;
 		do 
 		{
 			System.out.println("1. View Customer Orders.");
 			System.out.println("2. View Purchase Orders.");
 			System.out.println("3. Add Stock Delivery.");
-			System.out.println("4. Exit.");
+			System.out.println("4. Checkout an Order");
+			System.out.println("5. Exit.");
 			System.out.print("Please enter the number of the corresponding task to complete: ");
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 			String input = "";
@@ -80,10 +86,51 @@ public class App {
 					}
 					break;
 				case "4":
+					System.out.println("######################");
+					System.out.println("Printing backlog of orders:");
+					WarehouseJDBC r = new WarehouseJDBC();
+					ArrayList<CustomerOrder> result = r.getBacklog();
+					int size = result.size();
+					for (int i = 0;i<size;i++)
+					{
+						CustomerOrder custOrder = result.get(i);
+						System.out.println("######################");
+						System.out.println("Customer Order ID  : "+ String.valueOf(custOrder.getCustOrderID()));
+						System.out.println("Customer ID        : "+ String.valueOf(custOrder.getCustID()));
+						System.out.println("Delivery Address   : "+ custOrder.getDeliveryAddress());
+						System.out.println("Order Status       : "+ custOrder.geteOrderStatus().toString());
+						System.out.println("Employee ID        : "+ String.valueOf(custOrder.getEmployeeID()));
+						System.out.println("Order Cost Total   : £"+ String.valueOf(custOrder.getOrderTotal()));
+						System.out.println("######################");
+					}
+					System.out.println("Would you like to check out an order from the backlog? (Y/N)");
+					try 
+					{
+						input = br.readLine();
+					} 
+					catch (IOException e) 
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					switch (input){
+						case "Y":
+							CustomerOrder checkOut = result.get(0);
+							checkOut.checkOutOrder(checkOut.getOrderItemList(),checkOut.getCustOrderID());
+							System.out.println("Order Details:");
+							ArrayList<CustomerOrder> checkList = new ArrayList<CustomerOrder>();
+							checkList.add(checkOut);
+							break;
+						case "N":
+							break;
+					}
+					break;
+				case "5":
 					System.out.println("Exiting Application.");
 					flag = true;
 					break;
 			}
-		}while (flag != true);	
+		}while (flag != true);*/
 	}
 }
