@@ -121,21 +121,21 @@ public class CustomerOrder {
 	{
 		this.updateOrderStatus(itemList, orderID);
 		WarehouseJDBC jdbc = new WarehouseJDBC();
-		jdbc.checkOutOrder(orderID, this.getCustID());
+		jdbc.checkOutOrder(orderID, this.getCustID(), String.valueOf(this.geteOrderStatus()));
 	}
 	
 	public void updateOrderStatus(ArrayList<OrderItem> itemList, int orderID)
 	{
 		int switchInt = 0;
-		if (eOrderStatus == orderStatus.CONFIRMED)
+		if (this.geteOrderStatus() == orderStatus.CONFIRMED)
 			switchInt = 1;
-		else if (eOrderStatus == orderStatus.INQUEUE)
+		else if (this.geteOrderStatus() == orderStatus.INQUEUE)
 			switchInt = 2;
-		else if (eOrderStatus == orderStatus.PICKING)
+		else if (this.geteOrderStatus() == orderStatus.PICKING)
 			switchInt = 3;
-		else if (eOrderStatus == orderStatus.PACKING)
+		else if (this.geteOrderStatus() == orderStatus.PACKING)
 			switchInt = 4;
-		else if (eOrderStatus == orderStatus.DISPATCHING)
+		else if (this.geteOrderStatus() == orderStatus.DISPATCHING)
 			switchInt = 5;
 		else
 			switchInt = 6;
@@ -148,12 +148,14 @@ public class CustomerOrder {
 			case 2: 
 				eOrderStatus = orderStatus.PICKING;
 				this.setCheckedOut(true);
-				updateStockLevel(itemList, orderID);
+				updateStockLevel(this.getOrderItemList(), this.custOrderID);
 				switchInt = 0;
 				break;
 			case 3:
 				eOrderStatus = orderStatus.PACKING;
 				removeStockAllocation(itemList, orderID);
+				WarehouseJDBC jdbc = new WarehouseJDBC();
+				jdbc.checkOutOrder(this.getCustOrderID(), this.getCustID(), String.valueOf(this.geteOrderStatus()));
 				switchInt = 0;
 				break;
 			case 4:
@@ -177,15 +179,6 @@ public class CustomerOrder {
 		ArrayList<CustomerOrder> resultCust = orderPrint.returnCustOrder();
 		printArrayCust(resultCust);
 	}
-	
-	/*public String printOrdersGUI()
-	{
-		WarehouseJDBC orderPrint = new WarehouseJDBC();
-		ArrayList<CustomerOrder> resultCust = orderPrint.returnCustOrder();
-		String result = printArrayCust(resultCust);
-		return result;
-	}*/
-	
 	
 	public void printArrayCust(ArrayList<CustomerOrder> custList)
 	{

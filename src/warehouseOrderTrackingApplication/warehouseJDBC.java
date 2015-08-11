@@ -21,7 +21,7 @@ public class WarehouseJDBC {
 		Statement stmt = null;
 		ResultSet rs;
 		ArrayList<OrderItem> itemList = new ArrayList<OrderItem>();
-		System.out.println("Connecting to database...");
+		//System.out.println("Connecting to database...");
 		
 		try
 		{
@@ -73,7 +73,7 @@ public class WarehouseJDBC {
 		Statement stmt = null;
 		ResultSet rs;
 		ArrayList<CustomerOrder> custList = new ArrayList<CustomerOrder>();
-		System.out.println("Connecting to database...");
+		//System.out.println("Connecting to database...");
 		try 
 		{
 			Class.forName(jdbcDriver);
@@ -101,7 +101,7 @@ public class WarehouseJDBC {
 				}
 				rs.close();
 				
-				System.out.println("Database connection closed");
+				//System.out.println("Database connection closed");
 			}		
 			catch (SQLException se)
 			{
@@ -126,7 +126,7 @@ public class WarehouseJDBC {
 		ResultSet rs;
 	
 		ArrayList<PurchaseOrder> purchaseList = new ArrayList<PurchaseOrder>();
-		System.out.println("Connecting to database...");
+		//System.out.println("Connecting to database...");
 		
 		try 
 		{
@@ -151,7 +151,7 @@ public class WarehouseJDBC {
 					
 				}
 				rs.close();
-				System.out.println("Database connection closed");
+				//System.out.println("Database connection closed");
 			}		
 			catch (SQLException se)
 			{
@@ -176,7 +176,7 @@ public class WarehouseJDBC {
 		ResultSet rs;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			System.out.println("Connecting to database...");
+			//System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(dbURL,user, pass);
 	
 			stmt = conn.createStatement();
@@ -212,7 +212,7 @@ public class WarehouseJDBC {
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			System.out.println("Connecting to database...");
+			//System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(dbURL,user, pass);
 
 			stmt = conn.createStatement();
@@ -262,6 +262,7 @@ public class WarehouseJDBC {
 				CustomerOrder backlogItem = new CustomerOrder(custOrderID,custID,orderTotal,deliveryAddress,eOrderStatus, itemList);
 				backlogList.add(backlogItem);
 			}
+			rs.close();
 		}
 		catch (SQLException sqle)
 		{
@@ -280,7 +281,7 @@ public class WarehouseJDBC {
 		Statement stmt = null;
 		ResultSet rs;
 		ArrayList<OrderItem> itemList = new ArrayList<OrderItem>();
-		System.out.println("Connecting to database...");
+		//System.out.println("Connecting to database...");
 		
 		try
 		{
@@ -350,6 +351,7 @@ public class WarehouseJDBC {
 				//System.out.println(retOrderID);
 				break;
 			}
+			rs.close();
 		}
 		catch (SQLException sqle)
 		{
@@ -380,6 +382,7 @@ public class WarehouseJDBC {
 			{
 				itemLocation = rs.getString("warehouseLocation");
 			}
+			rs.close();
 		}
 		catch (SQLException sqle)
 		{
@@ -398,7 +401,6 @@ public class WarehouseJDBC {
 		Connection conn = null;
 		Statement stmt = null;
 		String sql = "INSERT INTO purchaseorder (supplierID,supplierName,orderTotal) VALUES ('"+String.valueOf(purch.getSupplierID())+"','"+purch.getSupplierName()+"','"+String.valueOf(purch.getOrderTotal())+"')";
-		//System.out.println(sql);
 		try 
 		{
 			Class.forName(jdbcDriver);
@@ -415,53 +417,45 @@ public class WarehouseJDBC {
 		{
 			e.printStackTrace();
 		}
-		
 		int orderID = getOrderID(purch);
-		//System.out.println(orderID);
 		createOrderItemDB(purch, orderID);
 	}
 	
 	public void createOrderItemDB(PurchaseOrder purch, int orderID)
 	{
-		
 		Connection conn = null;
 		Statement stmt = null;
 		ArrayList<OrderItem> itemList = purch.getOrderItemList();
 		int size = itemList.size();
-		String sql = "INSERT INTO orderitem VALUES ('";
+		
 		for (int i = 0; i < size; i++)
 		{
+			String sql = "INSERT INTO orderitem VALUES ('";
 			OrderItem o = itemList.get(i);
-			sql = sql + String.valueOf(orderID)+"','"+String.valueOf(o.getCustomerID())+"','"+String.valueOf(o.getItemID())+"','"+String.valueOf(o.getOrderItemQuantity())+"','"+String.valueOf(o.getOrderItemCost())+"','"+String.valueOf(o.getTotalItemCost())+"';";			
-			if ((i+1) < size)
+			sql = sql + String.valueOf(orderID)+"','"+String.valueOf(o.getCustomerID())+"','"+String.valueOf(o.getItemID())+"','"+String.valueOf(o.getOrderItemQuantity())+"','"+String.valueOf(o.getOrderItemCost())+"','"+String.valueOf(o.getTotalItemCost())+"');";			
+			/*if ((i+1) < size)
 			{
 				sql = sql + "INSERT INTO orderitem VALUES ('";
-			}
-			else
+			}*/
+			
+			try 
 			{
-				sql = sql + ")";
+				Class.forName(jdbcDriver);
+				//System.out.println("Connecting to database...");
+				conn = DriverManager.getConnection(dbURL, user, pass);
+				stmt = conn.createStatement();
+				stmt.executeUpdate(sql);
 			}
-		}
-		System.out.println(sql);
-		
-		
-		try 
-		{
-			Class.forName(jdbcDriver);
-			System.out.println("Connecting to database...");
-			conn = DriverManager.getConnection(dbURL, user, pass);
-			stmt = conn.createStatement();
-			stmt.executeUpdate(sql);
-		}
-		catch (SQLException sqle)
-		{
-			sqle.printStackTrace();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
+			catch (SQLException sqle)
+			{
+				sqle.printStackTrace();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}	
+}
 	
 	public ArrayList<Item> getPorousItems(int iditem)
 	{
@@ -492,6 +486,7 @@ public class WarehouseJDBC {
 				Item i = new Item(itemID, itemName, itemDesc, itemWeight, itemCost, itemSaleVal, porous, stockLevel, allocatedStock, warehouseLocation);
 				nonPorousItems.add(i);
 			}
+			rs.close();
 		}
 		catch (SQLException sqle)
 		{
@@ -525,6 +520,7 @@ public class WarehouseJDBC {
 				currentStock = rs.getInt("stockLevel");
 				flag = true;
 			}
+			rs.close();
 		}
 		catch (SQLException sqle)
 		{
@@ -560,6 +556,7 @@ public class WarehouseJDBC {
 				allocatedStock = rs.getInt("allocatedStock");
 				flag = true;
 			}
+			rs.close();
 		}
 		catch (SQLException sqle)
 		{
@@ -575,11 +572,11 @@ public class WarehouseJDBC {
 		return allocatedStock;
 	}
 	
-	public void checkOutOrder(int orderID, int custID)
+	public void checkOutOrder(int orderID, int custID, String status)
 	{
 		Connection conn = null;
 		Statement stmt = null;
-		String sql = "UPDATE customerorder SET eOrderStatus ='PICKING', isCheckedOut='1' WHERE idcustomerorder='"+String.valueOf(orderID)+"';";
+		String sql = "UPDATE customerorder SET eOrderStatus ='"+status+"', isCheckedOut='1' WHERE idcustomerorder='"+String.valueOf(orderID)+"';";
 	
 		try
 		{
@@ -608,17 +605,12 @@ public class WarehouseJDBC {
 			Class.forName(jdbcDriver);
 			conn = DriverManager.getConnection(dbURL, user, pass);
 			stmt = conn.createStatement();
-			String sql ="UPDATE item SET stockLevel='"+stockAdjustment+"' WHERE iditem='"+item.getItemID()+";";
+			String sql ="UPDATE item SET stockLevel='"+String.valueOf(stockAdjustment)+"' WHERE iditem='"+String.valueOf(item.getItemID())+"';";
 			stmt.executeUpdate(sql);
 			updateStockAllocation(item.getItemID(),item.getOrderItemQuantity());
-			
-		}
-		catch (SQLException sqle)
-		{
+		}catch (SQLException sqle){
 			sqle.printStackTrace();
-		}
-		catch (Exception e)
-		{
+		}catch (Exception e){
 			e.printStackTrace();
 		}
 	}
@@ -658,14 +650,10 @@ public class WarehouseJDBC {
 			Class.forName(jdbcDriver);
 			conn = DriverManager.getConnection(dbURL, user, pass);
 			stmt = conn.createStatement();
-			stmt.executeQuery(sql);
-		}
-		catch (SQLException sqle)
-		{
+			stmt.executeUpdate(sql);
+		}catch (SQLException sqle){
 			sqle.printStackTrace();
-		}
-		catch (Exception e)
-		{
+		}catch (Exception e){
 			e.printStackTrace();
 		}
 	}
@@ -711,7 +699,6 @@ public class WarehouseJDBC {
 			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(dbURL,user, pass);
-			
 			stmt = conn.createStatement();
 			stmt.executeQuery(sqlDelete);
 			System.out.println("Successfully removed record from table"); 

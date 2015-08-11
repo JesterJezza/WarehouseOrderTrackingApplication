@@ -4,9 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class TravellingSalesmanAlgorithm {
+public class TSAlgorithm {
 	private boolean[][] locations;
 	private ArrayList<String> route;
 	private int cost;
@@ -27,7 +26,7 @@ public class TravellingSalesmanAlgorithm {
 		this.cost = cost;
 	}
 	
-	public TravellingSalesmanAlgorithm()
+	public TSAlgorithm()
 	{
 		boolean[][] locations = new boolean[4][10];
 		for (int i = 0; i <4; i++)
@@ -39,7 +38,7 @@ public class TravellingSalesmanAlgorithm {
 		}
 	}
 	
-	public TravellingSalesmanAlgorithm(ArrayList<String> route, int cost)
+	public TSAlgorithm(ArrayList<String> route, int cost)
 	{
 		this.setCost(cost);
 		this.setRoute(route);
@@ -57,7 +56,6 @@ public class TravellingSalesmanAlgorithm {
 			}
 		}
 		int size = itemList.size();
-		String pickRoute = "";
 		ArrayList<String> itemLocations = new ArrayList<String>();
 		for (int i=0;i<size;i++)
 		{
@@ -95,85 +93,59 @@ public class TravellingSalesmanAlgorithm {
 			}
 		}
 		int sizeLoc = loc.length;
-		int lowestCost = Integer.MAX_VALUE;
-		int nextItem = -1;
-		boolean flag = false;
-		int currentCost = Integer.MAX_VALUE;
-		int totalCost = 0;		
-
-		for (int z=0;z<sizeLoc;z++)
+		ArrayList<Integer> visited = new ArrayList<Integer>();
+		visited.add(0);
+		int visitedPointer = 0;
+		ArrayList<Integer> unvisited = new ArrayList<Integer>();
+		for (int i=0; i<sizeLoc;i++)
 		{
-			int currentNode = loc[z];			
-			
-			if (flag == false)
-			{
-				flag = true;
-				int startNode = loc[z];
-				int initialCost = (Integer.parseInt(String.valueOf(startNode).substring(0, 1)))+(Integer.parseInt(String.valueOf(startNode).substring(1)));
-				currentCost = initialCost;
-			}
-			
-			for (int a=0; a<sizeLoc;a++)
-			{
-				if ((z+a) >= sizeLoc)
-				{
-					nextItem = loc[(z+a-sizeLoc)];
-				}
-				else
-				{
-					nextItem = loc[z+a];
-				}
-				
-				if (currentNode == nextItem)
-				{
-					if ((z+a+1) < sizeLoc)
-					{
-						nextItem = loc[z+a+1];
-					}
-					else 
-					{
-						nextItem = loc[((z+a+1)-sizeLoc)];
-					}
-				}
-			
-				int row = Integer.parseInt(String.valueOf(currentNode).substring(0,1));
-				int column = Integer.parseInt(String.valueOf(currentNode).substring(1));
-				int nextRow = Integer.parseInt(String.valueOf(nextItem).substring(0, 1));
-				int nextColumn = Integer.parseInt(String.valueOf(nextItem).substring(1));
-				int costLeft = column;
-				int costRight = 10-column;
-				int costRow = Math.abs(nextRow - row);
-				
-				if (costLeft < costRight)
-				{
-					int nextCost = nextColumn;
-					currentCost = currentCost + costLeft + costRow + nextCost;
-				}
-				else if (costRight < costLeft)
-				{
-					int nextCost = 9 - nextColumn;
-					currentCost = currentCost + costRight + costRow + nextCost;
-				}
-				totalCost = totalCost + currentCost;
-				
-			}
-			
-			if (totalCost < lowestCost)
-			{
-				lowestCost = totalCost;
-				totalCost = 0;
-				currentCost = 0;
-				pickRoute = pickRoute +" "+String.valueOf(currentNode)+" ---> "+ String.valueOf(nextItem)+" ---> ";
-			}
-			else 
-			{
-				totalCost = 0;
-				currentCost = 0;
-			}
+			unvisited.add(loc[i]);
 		}
-		System.out.println(pickRoute);
-		System.out.println(lowestCost);
-		System.out.println("Would you like to see a map of the items to pick? (Y/N)");
+		
+		int tempP = -1;
+		while (unvisited.size() > 0)
+		{
+			int closestNode = Integer.MAX_VALUE;
+			int unSize = unvisited.size();
+			for (int i = 0; i < unSize; i++)
+			{
+				int temp = Math.abs(unvisited.get(i) - visited.get(visitedPointer));
+				
+				if ( temp < closestNode)
+				{
+					closestNode = temp;
+					tempP = i;
+				}
+			}
+			visited.add(closestNode);
+			unvisited.remove(tempP);
+			unvisited.trimToSize();
+		}
+		System.out.print("Pick Order: ");
+		for (int i=1;i<visited.size();i++)
+		{
+			String pick = String.valueOf(visited.get(i));
+			char c = pick.charAt(0);
+			String pickC = pick.substring(1);
+			
+			switch (c){
+				case '1':
+					pick = "A"+pickC; 
+					break;
+				case '2':
+					pick = "B"+pickC;
+					break;
+				case '3':
+					pick = "C"+pickC;
+					break;
+				case '4':
+					pick = "D"+pickC;
+					break;
+			}
+			System.out.print(pick+",");
+		}
+		System.out.println("");
+		System.out.print("Would you like to see a map of the items to pick? (Y/N): ");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String input = "";
 		try
@@ -184,9 +156,9 @@ public class TravellingSalesmanAlgorithm {
 		{
 			e.printStackTrace();
 		}
-		
 		switch (input){
 			case "Y":
+				System.out.println("#############################");
 				System.out.println("      |1|2|3|4|5|6|7|8|9|10|");						 
 				for (int y=0;y<4;y++)
 				{
@@ -201,21 +173,28 @@ public class TravellingSalesmanAlgorithm {
 					for (int x=0;x<10;x++)
 					{
 						if (locations[y][x] == false && x == 9 )
+						{
 							System.out.print("| -");
+						}
 						else if (locations[y][x] == false)
+						{
 							System.out.print("|-");
+						}
 						else if (locations[y][x] == true && x==9)
+						{
 							System.out.print("| *");
+						}
 						else if (locations[y][x] == true)
+						{
 							System.out.print("|*");
-							
+						}	
 					}
 					System.out.println("|");
 				}
+				System.out.println("#############################");
 				break;
 			case "N":
 				break;
 		}
 	}
-
 }

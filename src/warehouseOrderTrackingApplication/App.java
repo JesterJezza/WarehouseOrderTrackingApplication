@@ -13,15 +13,17 @@ public class App {
 		// TODO Auto-generated method stub
 		//SwingAppGUI swg = new SwingAppGUI();
 		//swg.swing();
-		newGUI gui = new newGUI();
+		/*newGUI gui = new newGUI();
 		gui.setSize(950,650);
 		gui.setVisible(true);
 		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+		*/
 		//String testSQL = "INSERT INTO customerorder (orderTotal, deliveryAddress, isCheckedOut, eOrderStatus, idcustomer) VALUES ('234','qwerwqerqwe','0','CONFIRMED','1')";
 		//warehouseJDBC testJDBC = new warehouseJDBC();
 		//testJDBC.createDB(testSQL);
-		/*boolean flag = false;
+		
+		
+		boolean flag = false;
 		do 
 		{
 			System.out.println("1. View Customer Orders.");
@@ -55,7 +57,7 @@ public class App {
 					System.out.println("Adding Stock Delivery to IMS.....");
 					PurchaseOrder createPur = new PurchaseOrder();
 					createPur = createPur.addPurchaseOrder();
-					System.out.println("Would you like to see which items within this purchase Order Require porousware treatment? Y/N");
+					System.out.print("Would you like to see which items within this purchase Order require porousware treatment? (Y/N): ");
 					String choice ="";
 					try
 					{
@@ -86,7 +88,7 @@ public class App {
 					}
 					break;
 				case "4":
-					System.out.println("######################");
+					System.out.println("#############################");
 					System.out.println("Printing backlog of orders:");
 					WarehouseJDBC r = new WarehouseJDBC();
 					ArrayList<CustomerOrder> result = r.getBacklog();
@@ -94,16 +96,16 @@ public class App {
 					for (int i = 0;i<size;i++)
 					{
 						CustomerOrder custOrder = result.get(i);
-						System.out.println("######################");
+						System.out.println("#############################");
 						System.out.println("Customer Order ID  : "+ String.valueOf(custOrder.getCustOrderID()));
 						System.out.println("Customer ID        : "+ String.valueOf(custOrder.getCustID()));
 						System.out.println("Delivery Address   : "+ custOrder.getDeliveryAddress());
 						System.out.println("Order Status       : "+ custOrder.geteOrderStatus().toString());
 						System.out.println("Employee ID        : "+ String.valueOf(custOrder.getEmployeeID()));
 						System.out.println("Order Cost Total   : £"+ String.valueOf(custOrder.getOrderTotal()));
-						System.out.println("######################");
+						System.out.println("#############################");
 					}
-					System.out.println("Would you like to check out an order from the backlog? (Y/N)");
+					System.out.print("Would you like to check out an order from the backlog? (Y/N): ");
 					try 
 					{
 						input = br.readLine();
@@ -118,9 +120,30 @@ public class App {
 						case "Y":
 							CustomerOrder checkOut = result.get(0);
 							checkOut.checkOutOrder(checkOut.getOrderItemList(),checkOut.getCustOrderID());
-							System.out.println("Order Details:");
+							checkOut.updateOrderStatus(checkOut.getOrderItemList(), checkOut.getCustOrderID());
+							//System.out.println("Order Details:");
 							ArrayList<CustomerOrder> checkList = new ArrayList<CustomerOrder>();
 							checkList.add(checkOut);
+							TSAlgorithm al = new TSAlgorithm();
+							al.algorithm(checkOut.getOrderItemList());
+							System.out.print("Enter Y when order has been fully picked: ");
+							try 
+							{
+								input = br.readLine();
+							}
+							catch (IOException e)
+							{
+								e.printStackTrace();
+							}
+							
+							switch (input){
+							case "Y":
+								checkOut.removeStockAllocation(checkOut.getOrderItemList(), checkOut.getCustOrderID());
+								checkOut.updateOrderStatus(checkOut.getOrderItemList(), checkOut.getCustOrderID());
+								break;
+							case "":
+								break;
+							}
 							break;
 						case "N":
 							break;
@@ -131,6 +154,6 @@ public class App {
 					flag = true;
 					break;
 			}
-		}while (flag != true);*/
+		}while (flag != true);
 	}
 }
