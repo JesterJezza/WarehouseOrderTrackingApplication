@@ -404,7 +404,7 @@ public class WarehouseJDBC {
 		try 
 		{
 			Class.forName(jdbcDriver);
-			System.out.println("Connecting to database...");
+			//System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(dbURL, user, pass);
 			stmt = conn.createStatement();
 			stmt.executeUpdate(sql);
@@ -619,12 +619,23 @@ public class WarehouseJDBC {
 	{
 		Connection conn = null;
 		Statement stmt = null;
+		Statement stmt2 = null;
+		ResultSet rs;
+		int allocatedStock = 0;
 		try
 		{
 			Class.forName(jdbcDriver);
 			conn = DriverManager.getConnection(dbURL, user, pass);
 			stmt = conn.createStatement();
-			String sql ="UPDATE item SET allocatedStock='"+String.valueOf(itemQuantity)+"' WHERE iditem='"+String.valueOf(itemID)+"';";
+			String sql2 = "SELECT allocatedStock FROM item WHERE iditem='"+itemID+"';";
+			rs = stmt.executeQuery(sql2);
+			while (rs.next())
+			{
+				allocatedStock = rs.getInt("allocatedStock");
+				break;
+			}
+			int newStockAl = allocatedStock + itemQuantity;
+			String sql ="UPDATE item SET allocatedStock='"+String.valueOf(newStockAl)+"' WHERE iditem='"+String.valueOf(itemID)+"';";
 			stmt.executeUpdate(sql);
 			conn.close();			
 		}

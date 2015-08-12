@@ -10,20 +10,18 @@ import javax.swing.JFrame;
 public class App {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		//SwingAppGUI swg = new SwingAppGUI();
-		//swg.swing();
-		/*newGUI gui = new newGUI();
-		gui.setSize(950,650);
+
+		newGUI gui = new newGUI();
+		gui.setSize(1200,800);
 		gui.setVisible(true);
 		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		*/
+		
 		//String testSQL = "INSERT INTO customerorder (orderTotal, deliveryAddress, isCheckedOut, eOrderStatus, idcustomer) VALUES ('234','qwerwqerqwe','0','CONFIRMED','1')";
 		//warehouseJDBC testJDBC = new warehouseJDBC();
 		//testJDBC.createDB(testSQL);
 		
 		
-		boolean flag = false;
+		/*boolean flag = false;
 		do 
 		{
 			System.out.println("1. View Customer Orders.");
@@ -154,6 +152,6 @@ public class App {
 					flag = true;
 					break;
 			}
-		}while (flag != true);
+		}while (flag != true);*/
 	}
 }

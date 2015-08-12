@@ -114,7 +114,7 @@ public class CustomerOrder {
 	
 	public enum orderStatus
 	{
-		CONFIRMED, INQUEUE, PICKING, PACKING, DISPATCHING, DISPATCHED
+		CONFIRMED, PICKING, PACKING, DISPATCHING, DISPATCHED
 	}
 	
 	public void checkOutOrder(ArrayList<OrderItem> itemList, int orderID)
@@ -129,44 +129,38 @@ public class CustomerOrder {
 		int switchInt = 0;
 		if (this.geteOrderStatus() == orderStatus.CONFIRMED)
 			switchInt = 1;
-		else if (this.geteOrderStatus() == orderStatus.INQUEUE)
-			switchInt = 2;
 		else if (this.geteOrderStatus() == orderStatus.PICKING)
-			switchInt = 3;
+			switchInt = 2;
 		else if (this.geteOrderStatus() == orderStatus.PACKING)
-			switchInt = 4;
+			switchInt = 3;
 		else if (this.geteOrderStatus() == orderStatus.DISPATCHING)
-			switchInt = 5;
+			switchInt = 4;
 		else
-			switchInt = 6;
+			switchInt = 5;
 		
 		switch (switchInt) {
 			case 1:
-				eOrderStatus = orderStatus.INQUEUE;
-				switchInt = 0;
-				break;
-			case 2: 
 				eOrderStatus = orderStatus.PICKING;
 				this.setCheckedOut(true);
 				updateStockLevel(this.getOrderItemList(), this.custOrderID);
 				switchInt = 0;
 				break;
-			case 3:
+			case 2:
 				eOrderStatus = orderStatus.PACKING;
 				removeStockAllocation(itemList, orderID);
 				WarehouseJDBC jdbc = new WarehouseJDBC();
 				jdbc.checkOutOrder(this.getCustOrderID(), this.getCustID(), String.valueOf(this.geteOrderStatus()));
 				switchInt = 0;
 				break;
-			case 4:
+			case 3:
 				eOrderStatus = orderStatus.DISPATCHING;
 				switchInt = 0;
 				break;
-			case 5:
+			case 4:
 				eOrderStatus = orderStatus.DISPATCHED;
 				switchInt = 0;
 				break;
-			case 6:
+			case 5:
 				System.out.println("Could not update order status, order is already marked as 'DISPATCHED'!");
 				switchInt = 0;
 				break;
