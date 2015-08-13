@@ -10,7 +10,9 @@ import javax.swing.JFrame;
 public class App {
 
 	public static void main(String[] args) {
-
+		
+		//***********************TO RUN PROGRAM IN GUI MODE***********************************
+		
 		newGUI gui = new newGUI();
 		gui.setSize(1200,800);
 		gui.setVisible(true);
@@ -20,7 +22,7 @@ public class App {
 		//warehouseJDBC testJDBC = new warehouseJDBC();
 		//testJDBC.createDB(testSQL);
 		
-		
+		//***********************TO RUN PROGRAM AS A CONSOLE APP******************************
 		/*boolean flag = false;
 		do 
 		{
@@ -68,12 +70,13 @@ public class App {
 					switch (choice) {
 						case "Y":
 							System.out.println("Printing items requiring Porousware treatment...");
-							int size = createPur.getOrderItemList().size();
+							int ID = createPur.getOrderItemList().get(0).getItemID();
+							WarehouseJDBC p = new WarehouseJDBC();
+							ArrayList<Item> nonPorousItems = p.getPorousItems(ID);
+							int size = nonPorousItems.size();
+							
 							for (int i=0;i<size;i++)
 							{
-								int ID = createPur.getOrderItemList().get(i).getItemID();
-								WarehouseJDBC p = new WarehouseJDBC();
-								ArrayList<Item> nonPorousItems = p.getPorousItems(ID);
 								Item item = nonPorousItems.get(i);
 								System.out.println("Item ID      : " +String.valueOf(item.getItemID()));
 								System.out.println("Item Name    : " +item.getItemName());

@@ -463,7 +463,7 @@ public class WarehouseJDBC {
 		Statement stmt = null;
 		ArrayList<Item> nonPorousItems = new ArrayList<Item>();
 		ResultSet rs;
-		String sql = "SELECT * FROM item WHERE iditem='"+String.valueOf(iditem)+"';";
+		String sql = "SELECT * FROM item WHERE isPorous ='0';";
 		try 
 		{
 			Class.forName(jdbcDriver);
@@ -479,7 +479,7 @@ public class WarehouseJDBC {
 				float itemWeight = rs.getFloat("itemWeight");
 				float itemCost = rs.getFloat("itemCost");
 				float itemSaleVal = rs.getFloat("itemSaleVal");
-				boolean porous = rs.getBoolean("porous");
+				boolean porous = rs.getBoolean("isPorous");
 				int stockLevel = rs.getInt("stockLevel");
 				int allocatedStock = rs.getInt("allocatedStock");
 				String warehouseLocation = rs.getString("warehouseLocation");

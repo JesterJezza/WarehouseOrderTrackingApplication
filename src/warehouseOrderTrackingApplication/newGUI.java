@@ -294,6 +294,7 @@ public class newGUI extends JFrame {
 				{
 				currentOrder.updateStockLevel(currentOrder.getOrderItemList(), currentOrderID);
 				currentOrder.updateOrderStatus(currentOrder.getOrderItemList(), currentOrderID);
+				currentOrder.removeStockAllocation(currentOrder.getOrderItemList(), currentOrderID);
 				DefaultTableModel dataModel = new DefaultTableModel();
 				tblCurrentOrder.setModel(dataModel);
 				currentOrder = null;
