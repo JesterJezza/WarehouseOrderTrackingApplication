@@ -16,7 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 public class SwingAppGUI extends JFrame {
-
+//THIS CLASS IS NO LONGER USED
 	private JFrame mainFrame;
 	private JFrame frame2;
 	private JLabel headerLabel;

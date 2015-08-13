@@ -1,7 +1,7 @@
 package warehouseOrderTrackingApplication;
 
 public class Item {
-	
+	//Class variables
 	private int itemID;
 	private String itemName;
 	private String itemDesc;
@@ -13,6 +13,7 @@ public class Item {
 	private int allocatedStock;
 	private String warehouseLocation;
 	
+	//Default constructor
 	public Item() {}
 	
 	public Item(int itemID, String itemName, String itemDesc, float itemWeight, float itemCost, float itemSaleVal, boolean porous, int stockLevel, int allocatedStock, String warehouseLocation)
@@ -29,6 +30,7 @@ public class Item {
 		setWarehouseLocation(warehouseLocation);
 	}
 	
+	//Getters and setters for object member variables
 	public int getStockLevel() {
 		return stockLevel;
 	}

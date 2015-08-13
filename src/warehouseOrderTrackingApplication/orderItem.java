@@ -1,16 +1,17 @@
 package warehouseOrderTrackingApplication;
 
 public class OrderItem {
-	
+	//Class variables
 	private int orderID;
 	private int customerID;
 	private int itemID;
 	private int orderItemQuantity;
 	private float orderItemCost;
 	private float totalItemCost;
-	
+	//Default constructor
 	public OrderItem(){}
 	
+	//Other constructors
 	public OrderItem(int ordID, int custID, int itID, int ordItQ, float ordItC, float totItC)
 	{
 		setOrderID(ordID);
@@ -30,6 +31,7 @@ public class OrderItem {
 		setTotalItemCost(totItC);
 	}
 
+	//Override toString function, was used during testing
 	@Override
 	public String toString() {
 		return "OrderItem [orderID=" + getOrderID() + ", customerID=" + customerID
@@ -38,6 +40,7 @@ public class OrderItem {
 				+ ", totalItemCost=" + getTotalItemCost() + "]";
 	}
 
+	//Getters and setters for object member variables 
 	public int getOrderID() {
 		return orderID;
 	}

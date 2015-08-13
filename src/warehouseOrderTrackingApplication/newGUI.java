@@ -73,14 +73,18 @@ public class newGUI extends JFrame {
 		btnDisplayCustOrder.setBounds(1042, 40, 90, 51);
 		panel_1.add(btnDisplayCustOrder);
 		
+		//Action event to fire when Display Customer Order button is clicked
 		btnDisplayCustOrder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				WarehouseJDBC jdbc = new WarehouseJDBC();
 				jdbc = new WarehouseJDBC();
+				//Get information from database
 				customerList = jdbc.returnCustOrder();
+				//Set table column names
 				String[] columnNames = {"Order ID", "Customer ID", "Delivery Address", "Order Status","isCheckedOut", "Order Total"};
 				int size = customerList.size();
 				Object[][] rowData = new Object[size][6];
+				//Loop to populate data model
 				for (int i = 0; i < size; i++)
 				{
 					CustomerOrder c = customerList.get(i);
@@ -91,9 +95,11 @@ public class newGUI extends JFrame {
 					rowData[i][4] = c.isCheckedOut();
 					rowData[i][5] = c.getOrderTotal();
 				}
+				//Create table with data model and column names
 				tblCustomerOrders = new JTable(rowData, columnNames);
-				//tblCustomerOrders.set
+				//Put the table inside the scroll view
 				scrollPaneCustomer.setViewportView(tblCustomerOrders);
+				//Refresh table
 				tblCustomerOrders.repaint();
 				
 			}
@@ -115,13 +121,17 @@ public class newGUI extends JFrame {
 		btnDisplayPurchaseOrders.setBounds(1042, 40, 90, 51);
 		panel_2.add(btnDisplayPurchaseOrders);
 		
+		//Action event to fire when Display Purchase Order button is clicked
 		btnDisplayPurchaseOrders.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				WarehouseJDBC jdbc = new WarehouseJDBC();
+				//Get information from database
 				purchaseList = jdbc.returnPurchOrder();
+				//Set column names
 				String[] columnNames = {"Purchase Order ID", "Supplier ID", "Supplier Name", "Order Total"};
 				int size = purchaseList.size();
 				Object[][] rowData = new Object[size][4];
+				//Loop to populate data model
 				for (int i=0;i<size;i++)
 				{
 					PurchaseOrder p = purchaseList.get(i);
@@ -130,8 +140,11 @@ public class newGUI extends JFrame {
 					rowData[i][2] = p.getSupplierName();
 					rowData[i][3] = p.getOrderTotal();
 				}
+				//Create table with data model and the column names
 				tblPurchaseOrders = new JTable(rowData, columnNames);
+				//Add table to the scroll pane
 				scrollPanePurchase.setViewportView(tblPurchaseOrders);
+				//Refresh the table
 				tblPurchaseOrders.repaint();
 			}
 		});
@@ -186,15 +199,18 @@ public class newGUI extends JFrame {
 		JLabel lblPhoto = new JLabel("<html><img src='https://upload.wikimedia.org/wikipedia/en/9/90/German_garden_gnome_cropped.jpg' height='234' width='346'");
 		lblPhoto.setBounds(10, 230, 346, 234);
 		panel.add(lblPhoto);
+		
+		//Action event fired when Add Stock Deliery button is clicked
 		btnAddStockDelivery.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//System.out.println(txtSupplierID.getText());
-				//System.out.println(addPurch.getSupplierID());
+				//Create instance of PurchaseOrder
 				addPurch = new PurchaseOrder();
+				//Get values that user has entered
 				addPurch.setSupplierID(Integer.parseInt(txtSupplierID.getText()));
 				addPurch.setSupplierName(txtSupplierName.getText());
 				addPurch.setOrderTotal(Float.parseFloat(txtTotalPurchCost.getText()));
 				items = Integer.parseInt(txtNumberOfItems.getText());
+				//Display item information page for how many items are in the purchase order
 				for (int i = 0;i<items;i++)
 				{
 					page2();
@@ -223,16 +239,19 @@ public class newGUI extends JFrame {
 		btnGetBacklog.setBackground(Color.white);
 		btnGetBacklog.setBackground(Color.white);
 		
-		
+		//Action listener for bakclog items button, can be called from a separate function with this
 		ActionListener backLogListener = new ActionListener() {
-			
+			//Action event fired when backlogListener is called
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				WarehouseJDBC jdbc = new WarehouseJDBC();
+				//Get information from database
 				checkOutList = jdbc.getBacklog();
+				//Set column names
 				String[] columnNames = {"Order ID", "Customer ID", "Delivery Address", "Number of Items", "Order Total"};
 				int size = checkOutList.size();
 				Object[][] rowData = new Object[size][5];
+				//Lopp to populate data model
 				for (int i = 0; i<size; i++)
 				{
 					CustomerOrder c = checkOutList.get(i);
@@ -242,8 +261,11 @@ public class newGUI extends JFrame {
 					rowData[i][3] = c.getOrderItemList().size();
 					rowData[i][4] = c.getOrderTotal();
 				}
+				//Create table with data model and column names
 				tblCheckOutOrder = new JTable(rowData, columnNames);
+				//Add table to scroll pane
 				scrollPaneCheckOut.setViewportView(tblCheckOutOrder);
+				//Refresh the table
 				tblCheckOutOrder.repaint();
 			}
 		};
@@ -282,22 +304,26 @@ public class newGUI extends JFrame {
 		tblCurrentOrder = new JTable();
 		scrollPaneCurrentOrder.setViewportView(tblCurrentOrder);
 		
+		//Action even first when Order Completed button is clicked
 		JButton btnOrderCompleted = new JButton("<html><font color=#1A661A>Order Picked</font>");
 		btnOrderCompleted.setBackground(Color.white);
 		btnOrderCompleted.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (currentOrder == null)
 				{
+					//An order needs to be checked out first in order to complete it
 					JOptionPane.showMessageDialog(btnOrderCompleted, "Please check out an order first!");
 				}
 				else
 				{
-				currentOrder.updateStockLevel(currentOrder.getOrderItemList(), currentOrderID);
-				currentOrder.updateOrderStatus(currentOrder.getOrderItemList(), currentOrderID);
-				currentOrder.removeStockAllocation(currentOrder.getOrderItemList(), currentOrderID);
-				DefaultTableModel dataModel = new DefaultTableModel();
-				tblCurrentOrder.setModel(dataModel);
-				currentOrder = null;
+					//Call functions to manipulate database for the current order
+					currentOrder.updateStockLevel(currentOrder.getOrderItemList(), currentOrderID);
+					currentOrder.updateOrderStatus(currentOrder.getOrderItemList(), currentOrderID);
+					currentOrder.removeStockAllocation(currentOrder.getOrderItemList(), currentOrderID);
+					DefaultTableModel dataModel = new DefaultTableModel();
+					//Empty the contents of the current order table
+					tblCurrentOrder.setModel(dataModel);
+					currentOrder = null;
 				}
 			}
 		});
@@ -307,54 +333,61 @@ public class newGUI extends JFrame {
 		JLabel lblPickRoute = new JLabel("Pick Route: ");
 		lblPickRoute.setBounds(200, 434, 327, 23);
 		panel_3.add(lblPickRoute);
+		
+		//Action listener fired when Checkout An Order button is clicked
 		btnCheckoutAnOrder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//METHOD FOR CHECKING OUT AN ORDER
 				int index = tblCheckOutOrder.getSelectedRow();
 				if (index == -1)
 				{
+					//An order from the backlog table must first be selected in order to check it out
 					JOptionPane.showMessageDialog(btnCheckoutAnOrder, "Please select an Order from the table below!");
 				}
 				else
 				{
-				//System.out.println(index);
-				CustomerOrder c = checkOutList.get(index);
-				currentOrder = checkOutList.get(index);
-				//System.out.println(c.toString());
-				currentOrderID = c.getCustOrderID();
-				c.checkOutOrder(c.getOrderItemList(), c.getCustOrderID());
-				backLogListener.actionPerformed(e);
-				lblOrderId.setText("Order ID: "+String.valueOf(c.getCustOrderID()));
-				lblCustomerId.setText("Customer ID: "+String.valueOf(c.getCustID()));
-				lblOrderTotal.setText("Order Total: £"+String.valueOf(c.getOrderTotal()));
-				lblDeliveryAddress.setText("Delivery Address: "+c.getDeliveryAddress());
-				String[] columnNames = {"Item ID", "Item Quantity", "Item Location", "Unit Cost", "Total Item Cost"};
-				int size = c.getOrderItemList().size();
-				Object[][] rowData = new Object[size][5];
-				
-				for (int i = 0; i<size; i++)
-				{
-					WarehouseJDBC jdbc = new WarehouseJDBC();
-					
-					rowData[i][0] = c.getOrderItemList().get(i).getItemID();
-					rowData[i][1] = c.getOrderItemList().get(i).getOrderItemQuantity();
-					rowData[i][2] = jdbc.getOrderLocation(c.getOrderItemList().get(i).getItemID());
-					rowData[i][3] = c.getOrderItemList().get(i).getOrderItemCost();
-					rowData[i][4] = c.getOrderItemList().get(i).getTotalItemCost();
-				}
-				TSAlgorithm al = new TSAlgorithm();
-				lblPickRoute.setText("<html><font color=#FF0000>"+al.algorithmGUI(c.getOrderItemList())+"</font>");
-				tblCurrentOrder = new JTable(rowData, columnNames);
-				scrollPaneCurrentOrder.setViewportView(tblCurrentOrder);
-				tblCurrentOrder.repaint();
+					//Create an instance of CustomerOrder from the index of the order selected from the backlog, checkout the order and change the values of labels so user can see order info
+					CustomerOrder c = checkOutList.get(index);
+					currentOrder = checkOutList.get(index);
+					currentOrderID = c.getCustOrderID();
+					c.checkOutOrder(c.getOrderItemList(), c.getCustOrderID());
+					backLogListener.actionPerformed(e);
+					lblOrderId.setText("Order ID: "+String.valueOf(c.getCustOrderID()));
+					lblCustomerId.setText("Customer ID: "+String.valueOf(c.getCustID()));
+					lblOrderTotal.setText("Order Total: £"+String.valueOf(c.getOrderTotal()));
+					lblDeliveryAddress.setText("Delivery Address: "+c.getDeliveryAddress());
+					//set column names
+					String[] columnNames = {"Item ID", "Item Quantity", "Item Location", "Unit Cost", "Total Item Cost"};
+					int size = c.getOrderItemList().size();
+					Object[][] rowData = new Object[size][5];
+					//Loop to populate data model
+					for (int i = 0; i<size; i++)
+					{
+						WarehouseJDBC jdbc = new WarehouseJDBC();
+						
+						rowData[i][0] = c.getOrderItemList().get(i).getItemID();
+						rowData[i][1] = c.getOrderItemList().get(i).getOrderItemQuantity();
+						rowData[i][2] = jdbc.getOrderLocation(c.getOrderItemList().get(i).getItemID());
+						rowData[i][3] = c.getOrderItemList().get(i).getOrderItemCost();
+						rowData[i][4] = c.getOrderItemList().get(i).getTotalItemCost();
+					}
+					//Run Travelling Salesman Algorithm on the checkedout order's item list and set the label to the pick route the user should take
+					TSAlgorithm al = new TSAlgorithm();
+					lblPickRoute.setText("<html><font color=#FF0000>"+al.algorithmGUI(c.getOrderItemList())+"</font>");
+					//Create table with data model and column names
+					tblCurrentOrder = new JTable(rowData, columnNames);
+					//Add table to scroll pane
+					scrollPaneCurrentOrder.setViewportView(tblCurrentOrder);
+					//Refresh the table
+					tblCurrentOrder.repaint();
 				}
 				
 			}
 		});;
-		
+		//Set all elements initialised at the top to visible
 		getContentPane().setVisible(true);
 	}
 	
+	//Page to display when adding a stock delivery, user can input item details here for an item in a purchase order
 	private void page2()
 	{
 		JFrame frame2 = new JFrame();
@@ -374,10 +407,12 @@ public class newGUI extends JFrame {
 		txtUnitCost.setBounds(150,94,80,20);
 		JButton btnAddPurOrderItem = new JButton("Submit");
 		btnAddPurOrderItem.setBounds(130,120,100,20);
+		
+		//Action event fired when submit button is clicked, orderItem is added to an ArrayList of orderItems
 		btnAddPurOrderItem.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//Create order item and set values based on user input
 				OrderItem i = new OrderItem();
 				i.setCustomerID(addPurch.getSupplierID());
 				i.setOrderID(0);
@@ -385,9 +420,9 @@ public class newGUI extends JFrame {
 				i.setOrderItemQuantity(Integer.parseInt(txtQuantity.getText()));
 				i.setOrderItemCost(Float.parseFloat(txtUnitCost.getText()));
 				i.setTotalItemCost(Float.parseFloat(String.valueOf((Integer.parseInt(txtQuantity.getText())*Float.parseFloat(txtUnitCost.getText())))));
-				//System.out.println(i.getTotalItemCost());
 				addPurchItem.add(i);
 				
+				//When all item information has been entered, insert the record into the database
 				if (addPurchItem.size() == items)
 				{
 					addPurch.setOrderItemList(addPurchItem);
@@ -395,6 +430,7 @@ public class newGUI extends JFrame {
 					jdbc.createPurchaseOrderDB(addPurch);
 					addPurchItem = null;
 				}
+				//Close window when submit is clicked
 				frame2.dispose();
 			}
 		});

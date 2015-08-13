@@ -15,6 +15,7 @@ public class CustomerOrder {
 	private int employeeID;
 	private ArrayList<OrderItem> orderItemList;
 	
+	//Getters and setters for class member variables
 	public int getCustOrderID() {
 		return custOrderID;
 	}
@@ -79,8 +80,10 @@ public class CustomerOrder {
 		this.orderItemList = orderItemList;
 	}
 
+	//Default constructor
 	public CustomerOrder() {}
 	
+	//Override of toString() used in testing
 	@Override
 	public String toString() {
 		return "CustomerOrder [custOrderID=" + custOrderID + ", custID="
@@ -90,6 +93,7 @@ public class CustomerOrder {
 				+ employeeID + ", orderItemList=" + orderItemList + "]";
 	}
 	
+	//Other Constructors
 	public CustomerOrder(int oID, int cID, float oTotal, String devAd, boolean checkOut, String oS, int emID, ArrayList<OrderItem> orItLst)
 	{
 		setCustOrderID(oID);
@@ -112,20 +116,25 @@ public class CustomerOrder {
 		setOrderItemList(itLst);
 	}
 	
+	//Enum used for order status, so that it can only ever be these values
 	public enum orderStatus
 	{
 		CONFIRMED, PICKING, PACKING, DISPATCHING, DISPATCHED
 	}
 	
+	//Funciton to checkout an order
 	public void checkOutOrder(ArrayList<OrderItem> itemList, int orderID)
 	{
+		//Update the order status of the object which called the function
 		this.updateOrderStatus(itemList, orderID);
+		//Create instance of WarehouseJDBC class to change this value in the database
 		WarehouseJDBC jdbc = new WarehouseJDBC();
 		jdbc.checkOutOrder(orderID, this.getCustID(), String.valueOf(this.geteOrderStatus()));
 	}
-	
+	//Called by previous function
 	public void updateOrderStatus(ArrayList<OrderItem> itemList, int orderID)
 	{
+		//Code to set the path an order can take, it will only change from CONFIRMED to PICKING, not CONFIRMED to DISPATCHING for example
 		int switchInt = 0;
 		if (this.geteOrderStatus() == orderStatus.CONFIRMED)
 			switchInt = 1;
@@ -138,14 +147,17 @@ public class CustomerOrder {
 		else
 			switchInt = 5;
 		
+		//Switch-case for what to do depending on the current order status
 		switch (switchInt) {
 			case 1:
+				//If the order is CONFIRMED, change to PICKING, checkout the order and update the stock level
 				eOrderStatus = orderStatus.PICKING;
 				this.setCheckedOut(true);
 				updateStockLevel(this.getOrderItemList(), this.custOrderID);
 				switchInt = 0;
 				break;
 			case 2:
+				//If the order is PICKING, change to PACKING and remove the allocated stock for this order in the database
 				eOrderStatus = orderStatus.PACKING;
 				removeStockAllocation(itemList, orderID);
 				WarehouseJDBC jdbc = new WarehouseJDBC();
@@ -167,21 +179,23 @@ public class CustomerOrder {
 		}
 	}
 	
+	//Funciton to print customer orders
 	public void printOrders()
 	{
+		//Create instance of the WarehouseJDBC class, call function in database to return all customer orders
 		WarehouseJDBC orderPrint = new WarehouseJDBC();
 		ArrayList<CustomerOrder> resultCust = orderPrint.returnCustOrder();
 		printArrayCust(resultCust);
 	}
-	
+	//Called by function above
 	public void printArrayCust(ArrayList<CustomerOrder> custList)
 	{
-		//String res = "Results:";
-		/*System.out.println("#############################################");
+		System.out.println("#############################################");
 		System.out.println("Results obtained from Customer Order Table:");
-		System.out.println("#############################################");*/
+		System.out.println("#############################################");
+		//Get size of ArrayList passed into function
 		int size = custList.size();
-		
+		//Loop throught for size of ArrayList and print info of each order
 		for (int i = 0; i < size; i++)
 		{
 			CustomerOrder custOrder = custList.get(i);
@@ -195,15 +209,7 @@ public class CustomerOrder {
 			System.out.println("######################");
 			System.out.println("Order Item details:");
 			ArrayList<OrderItem> orderList = custOrder.orderItemList;
-			/*res = res + "Customer Order ID: "+ String.valueOf(custOrder.custOrderID)+
-			"Customer ID: "+ String.valueOf(custOrder.custID)+
-			"Delivery Address: "+ custOrder.deliveryAddress+
-			"Order Status: "+ custOrder.eOrderStatus.toString()+
-			"Employee ID: "+ String.valueOf(custOrder.employeeID)+
-			"Order Cost Total: £"+ String.valueOf(custOrder.orderTotal)+
-			"Order Checked Out: "+ String.valueOf(custOrder.isCheckedOut)+
-			"##"+
-			"Order Item details:";*/
+			//Get number of items within the order, and loop through and print info for each item
 			int size2 = orderList.size();
 			
 			for (int j = 0; j < size2; j++) 
@@ -214,29 +220,22 @@ public class CustomerOrder {
 				System.out.println("Order Item Quantity: "+ String.valueOf(ordItem.getOrderItemQuantity()));
 				System.out.println("Order Item Cost    : £"+ String.valueOf(ordItem.getOrderItemCost()));
 				System.out.println("Total Item Cost    : £"+ String.valueOf(ordItem.getTotalItemCost()));
-				/*res = res +"##"+
-				"Item ID: "+ String.valueOf(ordItem.getItemID())+
-				"Order Item Quantity: "+ String.valueOf(ordItem.getOrderItemQuantity())+
-				"Order Item Cost    : £"+ String.valueOf(ordItem.getOrderItemCost())+
-				"Total Item Cost: £"+ String.valueOf(ordItem.getTotalItemCost());*/
 			}
-			//res = res + "####";
 		}
-		//return res;
-		
+		//Option to print order backlog
 		System.out.println("Would you like to see the list of Customer Orders currently being worked upon? (Y/N)");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String input ="";
 		try 
 		{
+			//Set input to user input
 			input = br.readLine();
 		} 
 		catch (IOException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		//Switch-case statement for orders currently being worked upon
 		switch (input) 
 		{
 			case "Y": 
@@ -246,6 +245,7 @@ public class CustomerOrder {
 				
 				for (int i = 0; i < size; i++)
 				{
+					//From all of the orders that have been returned, only print orders where checkedout = true
 					CustomerOrder workedOn = custList.get(i);
 					if (workedOn.isCheckedOut == true)
 					{
@@ -265,20 +265,29 @@ public class CustomerOrder {
 		}
 	}
 	
+	//Function to update stock level in the database
 	public void updateStockLevel(ArrayList<OrderItem> itemList, int orderID)
 	{
+		//Get size of arraylist passed into function
 		int size = itemList.size();
+		//Loop through each item
 		for (int i=0;i<size;i++)
 		{
+			//Get OrderItem at current index
 			OrderItem item = itemList.get(i);
-			WarehouseJDBC upStock = new WarehouseJDBC();
-			int currentStock = upStock.getCurrentStock(item.getItemID());
-			upStock.updateStock(item, currentStock);
+			//Create instance of WarehouseJDBC for database manipulation
+			WarehouseJDBC jdbc = new WarehouseJDBC();
+			//Get the current stock level, this is used later for the correct stock adjustment
+			int currentStock = jdbc.getCurrentStock(item.getItemID());
+			//Call function to adjust stock levels
+			jdbc.updateStock(item, currentStock);
 		}
 	}
 	
+	//Function to remove stock that has been allocated to an order in the database (when order is picked)
 	public void removeStockAllocation(ArrayList<OrderItem> itemList, int orderID)
 	{
+		
 		int size = itemList.size();
 		for (int i=0;i<size;i++)
 		{
